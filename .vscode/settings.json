@@ -1,0 +1,9 @@
+{
+	"python.linting.pylintEnabled": true,
+	"python.linting.enabled": true,
+	"python.linting.pylintArgs": [
+		"--disable=django-not-configured",
+		"--django-settings-module=backend.settings"
+    ],
+    "editor.defaultFormatter": "HookyQR.beautify"
+}

@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load django_bootstrap5 %}
+{% load static %}
+
+{% block body %}
+<div class="row justify-content-center mb-50">
+    <div class="col-10 col-md-8 col-lg-6 blue">
+        <h4 align="center" class="blue"><strong>REGISTER</strong></h4>
+        <form action="" method="post">
+            {% csrf_token %}
+
+            {% bootstrap_form form layout="floating" %}
+            {% bootstrap_form profileform layout="floating" %}
+            <div class="d-grid gap-2">
+                <button class="btn btn-primary" type="submit"><strong>REGISTER</strong></button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock body %}
