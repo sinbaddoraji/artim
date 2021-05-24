@@ -82,10 +82,35 @@ main {
 .btn-primary:not(:disabled):not(.disabled).active:focus,
 .btn-primary:not(:disabled):not(.disabled):active:focus,
 .show>.btn-primary.dropdown-toggle:focus {
-    box-shadow: 0 0 0 0.2rem #09406d;
+    box-shadow: 0 0 0 0.2rem #1d79ca;
 }
 
+.badge-primary {
+    background-color: #1d79ca;
+}
 
 .blue {
     color: #1d79ca;
+}
+
+.form_text {
+    color: #1d79ca;
+    font-weight: 600;
+}
+
+.links {
+    color: #1d79ca;
+}
+
+.links:hover {
+    color: #014e91;
+    cursor: pointer;
+}
+
+.skills{
+    height: 50px;
+}
+
+.star{
+    color: rgb(243, 171, 38);
 }

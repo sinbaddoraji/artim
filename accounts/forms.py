@@ -24,7 +24,9 @@ SKILLS = [
     ('printer', 'Printer'), ('veterinarian','Veterinarian'), 
     ('decorator','Decorator'), ('waller','Waller'), 
     ('thatcher','Thatcher'),('slater','Slater'), 
-    ('glazier','Glazier'), ('shearer','Shearer') 
+    ('glazier','Glazier'), ('shearer','Shearer'), ('hair braider','Hair Braider'),
+    ('hair barber','Hair Barber'), ('car painter','Car Painter'),
+    ('mechanic', 'Mechanic')
     ]
 
 class UserLoginForm(forms.Form):
@@ -110,13 +112,20 @@ class UserForm(forms.ModelForm):
 
 class UserProfileForm(forms.ModelForm):
     gender = forms.ChoiceField(choices=GENDER, required=True, widget=forms.Select())
-    user_type = forms.ChoiceField(label='What type of user are you?', widget=forms.RadioSelect, choices=USER_TYPE, required=True)
-    age = forms.IntegerField()
+    user_type = forms.ChoiceField(label='What type of user are you?', widget=forms.RadioSelect(attrs={'id':'user_type'}), choices=USER_TYPE, required=True)
+    age = forms.IntegerField(max_value=120)
     photo = forms.ImageField(label='Profile picture', required=False)
-    services = forms.MultipleChoiceField(label='Services rendered', choices=SKILLS, help_text='You can select multiple services')
+    services = forms.MultipleChoiceField(label='Services rendered', choices=SKILLS, help_text='Select multiple services by holding the control button')
+    phone_number = forms.CharField()
     class Meta:
         model = UserProfile
         exclude = ['user', 'payment_details', 'bank_details']
         widgets = {
-            # 'portfolio_url': forms.URLInput(attrs={'placeholder':'Enter your Portfolio url addres', 'class':'form-control', 'required':'False'}),
+            'phone_number': forms.TextInput(attrs={'id':'phone_number', 'maxlength':11, 'onkeypress':'return (event.charCode !==8 && event.charCode ===0 || (event.charCode >= 48 && event.charCode <= 57))'}),
         }
+
+    def clean_services(self):
+        services = self.cleaned_data['services'][2:-2]
+        if len(services.split("', '")) > 4:
+            raise forms.ValidationError("You can't select more than 4 services")
+        return services

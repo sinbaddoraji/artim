@@ -21,7 +21,7 @@
     <header>
         <nav class="navbar navbar-expand-lg sticky-top navbar-light" style="background-color: white;">
             <div class="container">
-                <a class="navbar-brand" href="/"><strong><span class="blue">ARTIM<span></strong></a>
+                <a class="navbar-brand" href="{% url 'index' "home" %}"><strong><span class="blue">ARTIM<span></strong></a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">
@@ -30,13 +30,13 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="/"><strong><span class="blue">BROWSE
-                                        ARTISANS</span></strong></a>
+                            <a class="nav-link active" aria-current="page" href="{% url 'index' "home" %}"><strong><span class="blue">Browse
+                                        Artisans</span></strong></a>
                         </li>
                         {% if user.is_authenticated %}
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'accounts:dashboard' %}">
-                                <strong><span class="blue">DASHBOARD</span></strong>
+                                <strong><span class="blue">Profile</span></strong>
                             </a>
                         </li>
                         {% endif %}
@@ -46,18 +46,18 @@
                         {% if user.is_authenticated %}
                         <li class="nav-item">
                             <a class="nav-link" aria-current="page" href="{% url 'accounts:logout' %}">
-                                <button class="btn btn-outline-primary"><strong>SIGN OUT</strong></button>
+                                <button class="btn btn-outline-primary"><strong>Sign Out</strong></button>
                             </a>
                         </li>
                         {% else %}
                         <li class="nav-item">
                             <a class="nav-link" aria-current="page" href="{% url 'accounts:login' %}">
-                                <button class="btn btn-outline-primary"><strong>SIGN IN</strong></button>
+                                <button class="btn btn-outline-primary"><strong>Sign In</strong></button>
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" aria-current="page" href="{% url 'accounts:register' %}">
-                                <button class="btn btn-outline-primary"><strong>REGISTER</strong></button>
+                                <button class="btn btn-outline-primary"><strong>Register</strong></button>
                             </a>
                         </li>
                         {% endif %}

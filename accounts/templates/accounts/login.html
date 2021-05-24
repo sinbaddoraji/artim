@@ -4,8 +4,8 @@
 
 {% block body %}
 <div class="row justify-content-center">
-    <div class="col-10 col-md-8 col-lg-6 blue">
-        <h4 align="center" class="blue"><strong>SIGN IN</strong></h4>
+    <div class="col-10 col-md-8 col-lg-6 form_text text-center">
+        <h3 class="blue"><strong>Sign in to your account</strong></h3>
         <form action="" method="post">
             {% csrf_token %}
             {% bootstrap_form form layout="floating" %}
@@ -13,6 +13,13 @@
                 <button class="btn btn-primary" type="submit"><strong>SIGN IN</strong></button>
             </div>
         </form>
+        <p><em>Don't have an account yet?</em> <a href="{% url 'accounts:register' %}" style="text-decoration: none;">
+
+                <span class="links"><Strong>REGISTER</Strong></span>
+            </a><br>
+            <a href="" class="links" style="text-decoration: none;"><strong>Forgot password or
+                    username?</strong></span></a>
+        </p>
     </div>
 </div>
 {% endblock body %}

@@ -33,8 +33,8 @@ def user_register(request):
     profileform = UserProfileForm()
 
     if request.method == "POST":
-        profileform = UserProfileForm(data=request.POST)
-        form = UserForm(data=request.POST)
+        profileform = UserProfileForm(request.POST, request.FILES)
+        form = UserForm(request.POST)
         if form.is_valid() and profileform.is_valid():
             username = form.cleaned_data.get('username').lower()
             password = form.cleaned_data.get('password')
@@ -44,11 +44,8 @@ def user_register(request):
             user.set_password(password)
             
             user_profile = profileform.save(commit=False)
-            # now arrange a onetoone relationship by joining the two forms together to be saved as one
             user_profile.user = user
-
             
-            # now you can save it
             user.save()
             user_profile.save()
             return redirect('accounts:success', info=form.cleaned_data.get('first_name'))
