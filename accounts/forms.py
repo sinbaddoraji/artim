@@ -117,6 +117,7 @@ class UserProfileForm(forms.ModelForm):
     photo = forms.ImageField(label='Profile picture', required=False)
     services = forms.MultipleChoiceField(label='Services rendered', choices=SKILLS, help_text='Select multiple services by holding the control button')
     phone_number = forms.CharField()
+    price = forms.DecimalField(label='Price per hour')
     class Meta:
         model = UserProfile
         exclude = ['user', 'payment_details', 'bank_details']
@@ -125,7 +126,7 @@ class UserProfileForm(forms.ModelForm):
         }
 
     def clean_services(self):
-        services = self.cleaned_data['services'][2:-2]
-        if len(services.split("', '")) > 4:
-            raise forms.ValidationError("You can't select more than 4 services")
+        services = self.cleaned_data['services']
+        if len(services) > 4:
+            raise forms.ValidationError(f"You can't select more than 4 services (You selected {len(services)})")
         return services
