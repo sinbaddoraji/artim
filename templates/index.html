@@ -18,8 +18,8 @@
             {% endfor %}
         </ul>
     </div>
+    {% if artisans.count > 0 %}
     <div class="row">
-
         {% for artisan in artisans %}
         <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 my-3">
             <div class="card fluid" >
@@ -33,12 +33,13 @@
                 {% endif %}
                 {% endif %}
                 <div class="card-body">
-                    <h5 class="card-title">{{artisan.user.first_name.title}} </h5>
+                    <h4 class="card-title"><strong></strong>{{artisan.user.first_name.title}}</strong></h4>
                     <div class="card-text my-2 skills">
                         {% for service in artisan.services|splitter %}
                             <span class="badge bg-primary" style="font-size: 0.75rem;">{{service.title}}</span>
                         {% endfor %}
                     </div>
+                    <h5><i class="fas fa-pound-sign form_text"></i><strong>{{artisan.price}}/hr</strong></h5>
                     <div class="star">
                         {% if artisan.get_rating >= 1 %}
                             <i class="fas fa-star"></i>
@@ -83,15 +84,20 @@
                     <strong>{{artisan.get_total_reviews}} review{{ artisan.get_total_reviews|pluralize }}</strong><br />
                     <div class="my-2"><i class="fas fa-map-marker-alt form_text"></i> <strong>{{artisan.city.title}}, UK</strong></div>
                     <div class="row my-2">
-                        <div class="col"><i class="far fa-calendar-alt form_text"></i> <strong>{{artisan.age}}</strong></div>
-                        <div class="col"><i class="fas fa-venus-mars form_text"></i> <strong>{{artisan.gender.title}}</strong></div>
+                        <div class="col-5"><i class="far fa-calendar-alt form_text"></i> <strong>{{artisan.age}}</strong></div>
+                        <div class="col-7"><i class="fas fa-venus-mars form_text"></i> <strong>{{artisan.gender.title}}</strong></div>
                     </div>
                 </div>
             </div>
         </div>
         {% endfor %}
-
     </div>
+    {% else %}
+    <br><br>
+    <div class="my-10">
+        <h4 class="text-center blue">There are no Artisans to be shown.</h4>
+    </div>
+    {% endif %}
 </div>
 <br />
 {% endblock body %}

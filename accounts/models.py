@@ -6,7 +6,7 @@ from django_resized import ResizedImageField
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, related_name="userprofile",on_delete=models.CASCADE)
-    photo = ResizedImageField(size=[400, 400], crop=['middle', 'center'], quality=100, force_format='JPEG', upload_to='images')
+    photo = ResizedImageField(size=[400, 400], crop=['middle', 'center'], quality=100, force_format='JPEG', upload_to='images', blank=True, null=True)
     gender = models.CharField(max_length=10)
     age = models.PositiveSmallIntegerField()
     payment_details = models.CharField(max_length=100, null=True, blank=True)

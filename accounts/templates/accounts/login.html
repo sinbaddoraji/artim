@@ -6,6 +6,12 @@
 <div class="row justify-content-center">
     <div class="col-10 col-md-8 col-lg-6 form_text text-center">
         <h3 class="blue"><strong>Sign in to your account</strong></h3>
+        {% if error %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                {{error}}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endif %}
         <form action="" method="post">
             {% csrf_token %}
             {% bootstrap_form form layout="floating" %}

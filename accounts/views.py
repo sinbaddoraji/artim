@@ -18,12 +18,9 @@ def user_login(request):
                 user = authenticate(request, username=username, password=password)
                 if user is not None:
                     login(request, user)
-                    if nextvalue:
-                        return redirect(nextvalue)
-                    else:
-                        return redirect('accounts:dashboard')
+                    return redirect('accounts:dashboard')
                 else:
-                    return render(request, 'login.html', context={'form':form})
+                    return render(request, 'accounts/login.html', context={'form':form, 'error':'Please enter a valid username and password combination.'})
 
     return render(request, 'accounts/login.html', context={'form': form})
 
@@ -56,7 +53,7 @@ def user_register(request):
 @login_required
 def userlogout(request):
     logout(request)
-    return redirect('index')
+    return redirect('/home/')
 
 class Dashboard(TemplateView):
     template_name = 'accounts/dashboard.html'

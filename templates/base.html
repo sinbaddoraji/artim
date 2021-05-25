@@ -33,17 +33,24 @@
                             <a class="nav-link active" aria-current="page" href="{% url 'index' "home" %}"><strong><span class="blue">Browse
                                         Artisans</span></strong></a>
                         </li>
-                        {% if user.is_authenticated %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'accounts:dashboard' %}">
-                                <strong><span class="blue">Profile</span></strong>
-                            </a>
-                        </li>
-                        {% endif %}
                     </ul>
                     <ul class="navbar-nav mb-2 mb-lg-0">
 
                         {% if user.is_authenticated %}
+                        <div class="nav-item dropdown drop form_text">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                <i class="fas fa-user-circle fa-1x form_text"></i><span class="form_text" style="font-size: 1.2rem;"> {{user.first_name.title}}</span>
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="{% url 'accounts:dashboard' %}">Your Dashboard</a></li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li><a class="dropdown-item" href="#">Edit Profile</a></li>
+                                <li><a class="dropdown-item" href="#">Change password</a></li>
+                            </ul>
+                        </div>
                         <li class="nav-item">
                             <a class="nav-link" aria-current="page" href="{% url 'accounts:logout' %}">
                                 <button class="btn btn-outline-primary"><strong>Sign Out</strong></button>
