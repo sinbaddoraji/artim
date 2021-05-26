@@ -25,15 +25,6 @@
             <div class="col-md-1"></div>
         </div>
         {% if user.is_staff %}
-            <h5><span class="badge bg-success">ADMIN</span></h5>
-        {% else %}
-            {% if user.userprofile.user_type == "artisan" %}
-                <h5><span class="badge bg-primary">ARTISAN</span></h5>
-            {% else %}
-                <h5><span class="badge bg-info">CUSTOMER</span></h5>
-            {% endif %}
-        {% endif %}
-        {% if user.is_staff %}
             <h4 class="form_text">{{user.first_name.title}} {{user.last_name.title}}</h4>
             <i class="fas fa-user-tag form_text my-2"></i> <strong>{{user.username}}</strong><br />
             <span class="form_text my-1"><strong>Joined:</strong></span> <strong>{{user.date_joined}}</strong><br />
@@ -42,7 +33,7 @@
                 <h4 class="form_text">{{user.first_name.title}} {{user.last_name.title}}</h4>
                 <div class="card-text my-2">
                     {% for service in user.userprofile.services|splitter %}
-                    <span class="badge bg-primary" style="font-size: 0.9rem;">{{service.title}}</span>
+                    <span class="badge bg-primary mb-1" style="font-size: 0.9rem;">{{service.title}}</span>
                     {% endfor %}
                 </div>
                 <span class="form_text my-1"><strong>Joined:</strong></span> <strong>{{user.date_joined}}</strong><br />
@@ -104,7 +95,34 @@
             {% endif %}
         {% endif %}
     </div>
-    <div class="col-8 info_div"></div>
+    <div class="col-8">
+    {% if user.is_staff %}
+        
+    {% else %}
+        {% if user.userprofile.user_type == "artisan" %}
+            {% if not user.userprofile.artisan_approved %}
+                <div class="alert alert-warning text-center" role="alert">
+                    <strong>Your profile is pending approval, please check back later.</strong>
+                </div>
+            {% endif %}
+            {% if not user.userprofile.bank_details  %}
+                <div class="alert alert-danger" role="alert">
+                    <h4 class="alert-heading text-center">PLEASE ADD YOUR BANK DETAILS</h4>
+                    <p>Thank you for joining ARTIM, but as an artisan you will need to add your bank details. This
+                        will let receive payment from customers.
+                    </p>
+                    <hr>
+                    <p class="mb-0"><strong>NOTE! Customers won't be able request your services until you add your bank details.</strong></p>
+                    <p class="text-center my-3"><a href="#"><button class="btn btn-danger"><strong><i class="fas fa-plus-square"></i> ADD BANK DETAILS</strong></button></a></p>
+                </div>
+            {% else %}
+                
+            {% endif %}
+        {% else %}
+            
+        {% endif %}
+    {% endif %}
+    </div>
 </div>
 <br>
 {% endblock body %}

@@ -114,12 +114,13 @@ class UserForm(forms.ModelForm):
 
 class UserProfileForm(forms.ModelForm):
     gender = forms.ChoiceField(choices=GENDER, required=True, widget=forms.Select())
-    user_type = forms.ChoiceField(label='What type of user are you?', widget=forms.RadioSelect(attrs={'id':'user_type'}), choices=USER_TYPE, required=True)
+    user_type = forms.ChoiceField(label='What type of user are you?', widget=forms.RadioSelect(attrs={'id':'user_type', 'onchange':'toggler()'}), choices=USER_TYPE, required=True)
     age = forms.IntegerField(max_value=120)
     photo = forms.ImageField(label='Profile picture', required=False)
-    services = forms.MultipleChoiceField(label='Services rendered', choices=SKILLS, help_text='Select multiple services by holding the control button')
+    services = forms.MultipleChoiceField(label='', choices=SKILLS, help_text='', widget=forms.SelectMultiple(attrs={'id':'services'}))
     phone_number = forms.CharField()
     price = forms.DecimalField(label='Price per hour')
+
     class Meta:
         model = UserProfile
         exclude = ['user', 'payment_details', 'bank_details']
@@ -132,3 +133,10 @@ class UserProfileForm(forms.ModelForm):
         if len(services) > 4:
             raise forms.ValidationError(f"You can't select more than 4 services (You selected {len(services)})")
         return services
+
+    def clean(self):
+        all_clean = super().clean()
+        user_type = all_clean.get("user_type")
+        services = all_clean.get("services")
+        if user_type == "artisan" and len(services) < 1:
+            raise forms.ValidationError("You have to choose at least one service as an ARTISAN")

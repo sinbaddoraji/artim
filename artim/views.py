@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
-from django.views.generic import ListView
+from django.contrib.auth.models import User
+from django.views.generic import ListView, DetailView
 from accounts.models import UserProfile
+from django.contrib.auth.mixins import LoginRequiredMixin
 from accounts.forms import SKILLS
 
 class HomePage(ListView):
@@ -28,4 +30,9 @@ class HomePage(ListView):
 
 def redirect_to_home(request):
     return redirect('/home/')
+
+class UserDetailView(DetailView):
+    model = UserProfile
+    slug_field = 'slug'
+    template_name = 'user_detail.html'
     

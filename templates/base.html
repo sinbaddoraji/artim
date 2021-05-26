@@ -40,7 +40,15 @@
                         <div class="nav-item dropdown drop form_text">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
                                 aria-expanded="false">
-                                <i class="fas fa-user-circle fa-1x form_text"></i><span class="form_text" style="font-size: 1.2rem;"> {{user.first_name.title}}</span>
+                                <i class="fas fa-user-circle fa-1x form_text"></i><span class="form_text" style="font-size: 1.2rem;"> {{user.first_name.title}} {% if user.is_staff %}
+                                <span class="badge bg-success">Admin</span>
+                                {% else %}
+                                {% if user.userprofile.user_type == "artisan" %}
+                                <span class="badge bg-primary">Artisan</span>
+                                {% else %}
+                                <span class="badge bg-info">Customer</span>
+                                {% endif %}
+                                {% endif %}</span>
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <li><a class="dropdown-item" href="{% url 'accounts:dashboard' %}">Your Dashboard</a></li>
@@ -48,6 +56,9 @@
                                     <hr class="dropdown-divider">
                                 </li>
                                 <li><a class="dropdown-item" href="#">Edit Profile</a></li>
+                                {% if user.userprofile.bank_details%}
+                                    <li><a class="dropdown-item" href="#">Edit Bank details</a></li>
+                                {% endif %}
                                 <li><a class="dropdown-item" href="#">Change password</a></li>
                             </ul>
                         </div>

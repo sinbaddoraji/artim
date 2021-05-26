@@ -19,4 +19,20 @@
 </div>
 <br>
 <br>
+<script>
+    var services = document.getElementById("services");
+    services.style.display = "none";
+    function toggler() {
+        var selected;
+        var radio1 = document.getElementById("user_type_0");
+        var radio2 = document.getElementById("user_type_1");
+        if (radio1.checked) {
+            selected = radio1.value;
+            services.style.display = "none";
+        } else if(radio2.checked) {
+            selected = radio2.value;
+            services.style.display = "block";
+        }
+        }
+</script>
 {% endblock body %}

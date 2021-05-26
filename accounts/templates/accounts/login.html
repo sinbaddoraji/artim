@@ -15,6 +15,7 @@
         <form action="" method="post">
             {% csrf_token %}
             {% bootstrap_form form layout="floating" %}
+            <input type="hidden" name="next" value="{{ request.GET.next }}" />
             <div class="d-grid gap-2">
                 <button class="btn btn-primary" type="submit"><strong>SIGN IN</strong></button>
             </div>
@@ -23,7 +24,7 @@
 
                 <span class="links"><Strong>REGISTER</Strong></span>
             </a><br>
-            <a href="" class="links" style="text-decoration: none;"><strong>Forgot password or
+            <a href="{% url 'password_reset' %}" class="links" style="text-decoration: none;"><strong>Forgot password or
                     username?</strong></span></a>
         </p>
     </div>

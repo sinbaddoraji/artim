@@ -4,8 +4,12 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.views.generic import TemplateView
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 def user_login(request):
+    if request.user.is_authenticated:
+        return redirect('accounts:dashboard')
+        
     form = UserLoginForm()
 
     if request.method == "POST":
@@ -18,7 +22,11 @@ def user_login(request):
                 user = authenticate(request, username=username, password=password)
                 if user is not None:
                     login(request, user)
-                    return redirect('accounts:dashboard')
+                    if nextvalue:
+                        return redirect(nextvalue)
+                        print(nextvalue)
+                    else:
+                        return redirect('accounts:dashboard')
                 else:
                     return render(request, 'accounts/login.html', context={'form':form, 'error':'Please enter a valid username and password combination.'})
 
@@ -26,6 +34,9 @@ def user_login(request):
 
 
 def user_register(request):
+    if request.user.is_authenticated:
+        return redirect('accounts:dashboard')
+
     form = UserForm()
     profileform = UserProfileForm()
 
@@ -50,13 +61,22 @@ def user_register(request):
 
     return render(request, 'accounts/register.html', context={'form': form, 'profileform': profileform})
 
+
 @login_required
 def userlogout(request):
     logout(request)
     return redirect('/home/')
 
-class Dashboard(TemplateView):
+
+class Dashboard(LoginRequiredMixin, TemplateView):
+    login_url = 'accounts:login'
     template_name = 'accounts/dashboard.html'
+
 
 class Success(TemplateView):
     template_name = 'accounts/registration_successful.html'
+
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect('accounts:dashboard')
+        return super().get(request, *args, **kwargs)

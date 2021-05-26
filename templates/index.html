@@ -22,7 +22,7 @@
     <div class="row">
         {% for artisan in artisans %}
         <div class="col-xs-12 col-sm-6 col-md-4 col-lg-3 col-xl-3 my-3">
-            <div class="card fluid" >
+            <a href="{% url 'user-detail' user_type=artisan.user_type slug=artisan.user.username %}" style="text-decoration: none;" class="blue"><div class="card fluid" >
                 {% if artisan.photo %}
                 <img src="{{MEDIA_URL}}/{{artisan.photo}}" class="card-img-top  img-fluid img-thumbnail" alt="{{artisan.user.first_name}}" width="100%" height="2">
                 {% else %}
@@ -39,7 +39,7 @@
                             <span class="badge bg-primary" style="font-size: 0.75rem;">{{service.title}}</span>
                         {% endfor %}
                     </div>
-                    <h5><i class="fas fa-pound-sign form_text"></i><strong>{{artisan.price}}/hr</strong></h5>
+                    <h5><i class="fas fa-pound-sign form_text"></i><strong style="color: black;">{{artisan.price}}/hr</strong></h5>
                     <div class="star">
                         {% if artisan.get_rating >= 1 %}
                             <i class="fas fa-star"></i>
@@ -81,14 +81,15 @@
                         <i class="far fa-star"></i>
                         {% endif %}
                     </div>
-                    <strong>{{artisan.get_total_reviews}} review{{ artisan.get_total_reviews|pluralize }}</strong><br />
-                    <div class="my-2"><i class="fas fa-map-marker-alt form_text"></i> <strong>{{artisan.city.title}}, UK</strong></div>
+                    <strong style="color: black;">{{artisan.get_total_reviews}} review{{ artisan.get_total_reviews|pluralize }}</strong><br />
+                    <div class="my-2"><i class="fas fa-map-marker-alt form_text"></i> <strong style="color: black;">{{artisan.city.title}}, UK</strong></div>
                     <div class="row my-2">
-                        <div class="col-5"><i class="far fa-calendar-alt form_text"></i> <strong>{{artisan.age}}</strong></div>
-                        <div class="col-7"><i class="fas fa-venus-mars form_text"></i> <strong>{{artisan.gender.title}}</strong></div>
+                        <div class="col-5"><i class="far fa-calendar-alt form_text"></i> <strong style="color: black;">{{artisan.age}}</strong></div>
+                        <div class="col-7"><i class="fas fa-venus-mars form_text"></i> <strong style="color: black;">{{artisan.gender.title}}</strong></div>
                     </div>
                 </div>
             </div>
+            </a>
         </div>
         {% endfor %}
     </div>
