@@ -4,7 +4,17 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.views.generic import TemplateView
 from django.contrib.auth.hashers import make_password
+<<<<<<< HEAD
 from django.contrib.auth.mixins import LoginRequiredMixin
+=======
+from accounts.forms import ChangePassword
+from django.views.generic import FormView
+from django.contrib.auth.models import User
+from django.urls import reverse
+from django.views.generic import UpdateView, DetailView
+from accounts.models import UserProfile
+from django.contrib.auth.views import PasswordChangeView
+>>>>>>> 38cc73affc8be3f0a19e2a7c2b532057cbbb581c
 
 def user_login(request):
     if request.user.is_authenticated:
@@ -67,10 +77,33 @@ def userlogout(request):
     logout(request)
     return redirect('/home/')
 
+<<<<<<< HEAD
 
 class Dashboard(LoginRequiredMixin, TemplateView):
     login_url = 'accounts:login'
     template_name = 'accounts/dashboard.html'
+=======
+def Dashboard(request):
+    return render(request, 'accounts/dashboard.html', context={})
+
+class Profile_update(UpdateView):
+    model = UserProfile
+    form_class = UserProfileForm
+    
+    #fields = ['phone_number', 'address', 'city', 'post_code']
+    
+    template_name = 'accounts/update_profile.html'
+    
+    success_url = '/account/dashboard'
+    #form_class = 
+    
+    #get object
+    # def get_object(self, queryset=None): 
+    #      return self.request.user
+
+def Change_password_done(request):
+    return render(request, 'accounts/change_password_done.html', context={})
+>>>>>>> 38cc73affc8be3f0a19e2a7c2b532057cbbb581c
 
 
 class Success(TemplateView):

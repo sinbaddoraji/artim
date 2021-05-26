@@ -2,7 +2,12 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django_resized import ResizedImageField
+<<<<<<< HEAD
 from django.utils.text import slugify
+=======
+from django.template.defaultfilters import slugify
+from django.urls import reverse
+>>>>>>> 38cc73affc8be3f0a19e2a7c2b532057cbbb581c
 
 
 class UserProfile(models.Model):
@@ -36,6 +41,14 @@ class UserProfile(models.Model):
     
     def get_total_reviews(self):
         return self.artisan_review.count()
+    
+    # def save(self, *args, **kwargs): # new
+    #     if not self.slug:
+    #         self.slug = slugify(self.title)
+    #     return super().save(*args, **kwargs)
+    
+    # def get_absolute_url(self):
+    #     return reverse('updateprofile', kwargs={'pk': self.pk})
 
 
 class Review(models.Model):
