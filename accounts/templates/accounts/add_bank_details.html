@@ -96,63 +96,42 @@
         {% endif %}
     </div>
     <div class="col-8">
-    {% if user.is_staff %}
-        <h4>There are <span class="form_text">{{artisans.count}}</span> Artisans waiting for approval</h4>
-        
-        {% for artisan in artisans %}
-            <div class="card p-3 my-3">
-                <div class="row">
-                    <div class="col">
-                        <strong class="form_text" style="font-size: 1.3rem;">{{artisan.user.first_name.title}} {{artisan.user.last_name.title}}</strong>
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-8 form_text">
+                <h3 class="blue text-center"><strong>Add your bank details</strong></h3>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-floating mb-3">
+                        <input type="text"  name="bank_name" value="{{bank_name}}" class="form-control" id="floatingInput" placeholder="Bank Name">
+                        <label for="floatingInput">Bank Name</label>
                     </div>
-                    <div class="col">
-                        <i class="fas fa-pound-sign form_text"></i><strong style="color: black;">{{artisan.price}}/hr</strong>
+                    <div class="row g-2">
+                        <div class="col-md">
+                            <div class="form-floating">
+                                <input type="text" name="sort_code" class="form-control" id="floatingInputGrid" placeholder="Sort Code"
+                                    value="{{sort_code}}" minlength="6" maxlength="6" onkeypress="return (event.charCode !==8 && event.charCode ===0 || (event.charCode >= 48 && event.charCode <= 57))">
+                                <label for="floatingInputGrid">Sort Code</label>
+                            </div>
+                        </div>
+                        <div class="col-md">
+                            <div class="form-floating">
+                                <input type="text" name="account_number" class="form-control" id="floatingInputGrid" placeholder="Account Number"
+                                    value="{{account_number}}" minlength="8" maxlength="8" onkeypress="return (event.charCode !==8 && event.charCode ===0 || (event.charCode >= 48 && event.charCode <= 57))">
+                                <label for="floatingInputGrid">Account Number</label>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col">
-                        <i class="fas fa-map-marker-alt form_text"></i> <strong style="color: black;">{{artisan.city.title}}, UK</strong>
+                    {% if error %}
+                        <p class="text-center mt-2" style="color: red;">{{error}}.</p>
+                    {% endif %}
+                    <div class="d-grid gap-2 mt-2">
+                        <button class="btn btn-primary" type="submit"><strong>ADD BANK DETAILS</strong></button>
                     </div>
-                </div>
-                <div class="card-text my-2 skills">
-                    {% for service in artisan.services|splitter %}
-                        <span class="badge bg-primary" style="font-size: 0.75rem;">{{service.title}}</span>
-                    {% endfor %}
-                </div>
-                <div class="row">
-                    <div class="col-md-6 d-grid gap-2">
-                        <a class="btn btn-success" href="{% url 'accounts:approve_or_block' username=artisan.user.username action="approve" %}"><strong><i class="fas fa-thumbs-up"></i> APPROVE</strong></a>
-                    </div>
-                    <div class="col-md-6 d-grid gap-2">
-                        <a class="btn btn-danger" href="{% url 'accounts:approve_or_block' username=artisan.user.username action="block" %}"><strong><i class="fas fa-ban"></i> BLOCK</strong></a>
-                    </div>
-                </div>
+                </form>
             </div>
-        {% endfor %}
-            
-    {% else %}
-        {% if user.userprofile.user_type == "artisan" %}
-            {% if not user.userprofile.artisan_approved %}
-                <div class="alert alert-warning text-center" role="alert">
-                    <strong>Your profile is pending approval, please check back later.</strong>
-                </div>
-            {% endif %}
-            {% if not user.userprofile.bank_details  %}
-                <div class="alert alert-danger" role="alert">
-                    <h4 class="alert-heading text-center">PLEASE ADD YOUR BANK DETAILS</h4>
-                    <p>Thank you for joining ARTIM, but as an artisan you will need to add your bank details. This
-                        will enable you to receive payment from customers.
-                    </p>
-                    <hr>
-                    <p class="mb-0"><strong>NOTE! Customers won't be able request your services until you add your bank details.</strong></p>
-                    <p class="text-center my-3"><a href="{% url 'accounts:add_bank_details' %}"><button class="btn btn-danger"><strong><i class="fas fa-plus-square"></i> ADD BANK DETAILS</strong></button></a></p>
-                </div>
-            {% else %}
-                
-            {% endif %}
-        {% else %}
-            
-        {% endif %}
-    {% endif %}
+            <div class="col-md-2"></div>
+        </div>
     </div>
 </div>
-<br>
-{% endblock body %}
+<br> {% endblock body %}

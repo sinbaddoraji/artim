@@ -2,12 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django_resized import ResizedImageField
-<<<<<<< HEAD
 from django.utils.text import slugify
-=======
-from django.template.defaultfilters import slugify
-from django.urls import reverse
->>>>>>> 38cc73affc8be3f0a19e2a7c2b532057cbbb581c
+from django.shortcuts import redirect
 
 
 class UserProfile(models.Model):
@@ -25,6 +21,7 @@ class UserProfile(models.Model):
     user_type = models.CharField(max_length=10)
     services = models.CharField(max_length=100, null=True, blank=True)
     artisan_approved = models.BooleanField(default=False)
+    blocked = models.BooleanField(default=False)
     price = models.DecimalField(decimal_places=2, max_digits=10)
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
@@ -41,14 +38,19 @@ class UserProfile(models.Model):
     
     def get_total_reviews(self):
         return self.artisan_review.count()
-    
-    # def save(self, *args, **kwargs): # new
-    #     if not self.slug:
-    #         self.slug = slugify(self.title)
-    #     return super().save(*args, **kwargs)
-    
-    # def get_absolute_url(self):
-    #     return reverse('updateprofile', kwargs={'pk': self.pk})
+
+    def approve_artisan(self):
+        self.artisan_approved = True
+        self.blocked = False
+        self.save()
+
+    def block_user(self):
+        self.blocked = True
+        self.save()
+
+    def unblock_user(self):
+        self.blocked = False
+        self.save()
 
 
 class Review(models.Model):
@@ -70,7 +72,7 @@ class Order(models.Model):
     rejected = models.BooleanField(default=False)
 
 
-class Basket(models.Model):
+class SavedOrder(models.Model):
     service = models.CharField(max_length=100)
     artisan_basket = models.ForeignKey(UserProfile, related_name='artisan_basket', on_delete=models.CASCADE)
     customer_basket = models.ForeignKey(UserProfile, related_name='customer_basket', on_delete=models.CASCADE)

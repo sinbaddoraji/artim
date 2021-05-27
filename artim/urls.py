@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from .views import HomePage, redirect_to_home, UserDetailView
+from .views import HomePage, redirect_to_home, UserDetailView, goodbye
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
@@ -34,5 +34,6 @@ urlpatterns = [
     path('<slug>/', HomePage.as_view(), name='index'),
     path('account/', include('accounts.urls')),
     path('', redirect_to_home),
-    path('<str:user_type>/<slug:slug>/', UserDetailView.as_view(), name='user-detail'),
+    path('profile/<str:user_type>/<slug:slug>/', UserDetailView.as_view(), name='user-detail'),
+    path('user/goodbye/', goodbye, name='goodbye'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

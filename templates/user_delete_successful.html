@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load django_bootstrap5 %}
+{% load static %}
+
+{% block body %}
+<br>
+<br>
+<br>
+<div class="row justify-content-center">
+    <div class="col-10 col-md-8 col-lg-6 blue text-center">
+        <h1><i class="far fa-sad-tear"></i></h1>
+        <h4>We are sad to see you go</h4>
+        <h5>You have deleted your account successfully</h5>
+        <a href="{% url 'accounts:register' %}"><button class="btn btn-outline-primary btn-lg">REGISTER</button></a>
+    </div>
+</div>
+{% endblock body %}

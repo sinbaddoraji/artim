@@ -7,24 +7,28 @@
                 {% if user.userprofile.photo %}
                 <img src="{{MEDIA_URL}}/{{user.userprofile.photo}}" class="img-fluid img-thumbnail rounded-circle"
                     alt="{{user.first_name}}"> {% else %} {% if user.userprofile.gender == "male" or user.is_staff%}
-                <img src="{% static " images/male.jpg " %}" class="img-fluid img-thumbnail rounded-circle"
+                <img src="{% static "images/male.jpg " %}" class="img-fluid img-thumbnail rounded-circle"
                     alt="{{user.first_name}}"> {% else %}
-                <img src="{% static " images/female.jpg " %}" class="img-fluid img-thumbnail rounded-circle"
+                <img src="{% static "images/female.jpg " %}" class="img-fluid img-thumbnail rounded-circle"
                     alt="{{user.first_name}}"> {% endif %} {% endif %}
             </div>
             <div class="col-md-1"></div>
         </div>
         {% if user.is_staff %}
         <h5><span class="badge bg-success">ADMIN</span></h5>
-        {% else %} {% if user.userprofile.user_type == "artisan" %}
+        {% else %}
+        {% if user.userprofile.user_type == "artisan" %}
         <h5><span class="badge bg-primary">ARTISAN</span></h5>
         {% else %}
         <h5><span class="badge bg-info">CUSTOMER</span></h5>
-        {% endif %} {% endif %} {% if user.is_staff %}
+        {% endif %}
+        {% endif %}
+        {% if user.is_staff %}
         <h4 class="form_text">{{user.first_name.title}} {{user.last_name.title}}</h4>
         <i class="fas fa-user-tag form_text my-2"></i> <strong>{{user.username}}</strong><br />
-        <span class="form_text my-1"><strong>Joined:</strong></span> <strong>{{user.date_joined}}</strong><br /> {% else
-        %} {% if user.userprofile.user_type == "artisan" %}
+        <span class="form_text my-1"><strong>Joined:</strong></span> <strong>{{user.date_joined}}</strong><br /> 
+        {% else %} 
+        {% if user.userprofile.user_type == "artisan" %}
         <h4 class="form_text">{{user.first_name.title}} {{user.last_name.title}}</h4>
         <div class="card-text my-2">
             {% for service in user.userprofile.services|splitter %}
@@ -62,13 +66,25 @@
             {% endif %}
         </strong> {% else %} {% endif %} {% endif %}
     </div>
-    <div class="col-8 info_div">
-        <div class="col-10 col-md-8 col-lg-6 blue text-center">
-            <h1><i class="far fa-check-circle fa-3x"></i></h1>
-            <h5>Your password change was successful</h5>
-            <a href="{% url 'accounts:dashboard' %}"><button class="btn btn-outline-primary btn-lg">Go to Dashboard</button></a>
+    <div class="col-8">
+        <div class="row my-5">
+            <div class="col-md-2"></div>
+            <div class="col-md-8">
+                <form method="post">
+                    {% csrf_token %}
+                    <h4 class="blue text-center">Are you sure you want to delete your account"?</h4>
+                    <div class="row">
+                        <div class="col-md-6 d-grid gap-2">
+                            <a href="{% url 'accounts:dashboard' %}" class="btn btn-warning"><strong><i class="fas fa-times"></i> NO</strong></a>
+                        </div>
+                        <div class="col-md-6 d-grid gap-2">
+                            <button class="btn btn-danger" type="submit"><strong><i class="fas fa-check-circle"></i> YES, PLEASE</strong></button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-2"></div>
         </div>
     </div>
 </div>
 <br> {% endblock body %}
-

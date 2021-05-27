@@ -5,6 +5,11 @@ from accounts.models import UserProfile
 from django.contrib.auth.mixins import LoginRequiredMixin
 from accounts.forms import SKILLS
 
+
+def redirect_to_home(request):
+    return redirect('/home/')
+
+
 class HomePage(ListView):
     context_object_name = 'artisans'
     template_name = 'index.html'
@@ -15,7 +20,7 @@ class HomePage(ListView):
         return super().get(request, *args, **kwargs)
 
     def get_queryset(self):
-        queryset = UserProfile.objects.filter(user_type='artisan')
+        queryset = UserProfile.objects.filter(user_type='artisan').filter(artisan_approved=True).filter(blocked=False)
         if self.slug == "home" or self.slug == "all":
             return queryset
         else:
@@ -28,11 +33,12 @@ class HomePage(ListView):
         context['skills'] = SKILLS
         return context
 
-def redirect_to_home(request):
-    return redirect('/home/')
 
 class UserDetailView(DetailView):
     model = UserProfile
     slug_field = 'slug'
     template_name = 'user_detail.html'
+
+def goodbye(request):
+    return render(request, 'user_delete_successful.html')
     

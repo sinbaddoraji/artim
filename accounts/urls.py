@@ -12,4 +12,8 @@ urlpatterns = [
     path('changepassword/', auth_views.PasswordChangeView.as_view(template_name='accounts/change_password.html', success_url='/account/dashboard/'), name='changepassword'),
     path('success/<str:info>/', views.Success.as_view(), name='success'),
     path('updateprofile/<slug:slug>/', views.ProfileUpdateView.as_view(), name='updateprofile'),
+    path('deleteaccount/<slug:slug>/', views.DeleteUserView.as_view(), name='deleteaccount'),
+    path('addbankaccount/', views.add_bank_details, name='add_bank_details'),
+    path('admin/<slug:username>/<slug:action>/', views.approve_or_block_user_view, name='approve_or_block'),
+    path('admin/blockedusers/', views.BlockUsers.as_view(), name='blocked_users'),
 ]

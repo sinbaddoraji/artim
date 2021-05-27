@@ -62,19 +62,36 @@
                 </strong> {% else %} {% endif %} {% endif %}
     </div>
     <div class="col-8">
-        <div class="row">
-            <div class="col-md-2"></div>
-            <div class="col-md-8">
-                <h3 class="blue text-center"><strong>Change password</strong></h3>
-                <form method="post">
-                    {% csrf_token %} {% bootstrap_form form layout="floating" %}
-                    <div class="d-grid gap-2">
-                        <button class="btn btn-primary" type="submit"><strong>Change password</strong></button>
+        <h4>There are <span class="form_text">{{blocked_artisans.count}}</span> blocked users.</h4>
+        {% for artisan in blocked_artisans %}
+            <div class="card p-3 my-3">
+                <div class="row">
+                    <h4 style="color: red;">BLOCKED</h4>
+                    <div class="col">
+                        <strong class="form_text" style="font-size: 1.3rem;">{{artisan.user.first_name.title}} {{artisan.user.last_name.title}}</strong>
                     </div>
-                </form>
+                    <div class="col">
+                        <i class="fas fa-pound-sign form_text"></i><strong style="color: black;">{{artisan.price}}/hr</strong>
+                    </div>
+                    <div class="col">
+                        <i class="fas fa-map-marker-alt form_text"></i> <strong style="color: black;">{{artisan.city.title}}, UK</strong>
+                    </div>
+                </div>
+                <div class="card-text my-2 skills">
+                    {% for service in artisan.services|splitter %}
+                        <span class="badge bg-primary" style="font-size: 0.75rem;">{{service.title}}</span>
+                    {% endfor %}
+                </div>
+                <div class="row">
+                    <div class="col-md-6 d-grid gap-2">
+                        <a class="btn btn-success" href="{% url 'accounts:approve_or_block' username=artisan.user.username action="approve" %}"><strong><i class="fas fa-thumbs-up"></i> UNBLOCK AND APPROVE</strong></a>
+                    </div>
+                    <div class="col-md-6 d-grid gap-2">
+                        <a class="btn btn-warning" href="{% url 'accounts:approve_or_block' username=artisan.user.username action="unblock" %}"><strong><i class="fas fa-ban"></i> UNBLOCK</strong></a>
+                    </div>
+                </div>
             </div>
-            <div class="col-md-2"></div>
-        </div>
+        {% endfor %}
     </div>
 </div>
 <br> {% endblock body %}
