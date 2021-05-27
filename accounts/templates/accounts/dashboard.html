@@ -97,6 +97,8 @@
     </div>
     <div class="col-8">
     {% if user.is_staff %}
+        
+        {% if artisan.count > 0 %}
         <h4>There are <span class="form_text">{{artisans.count}}</span> Artisans waiting for approval</h4>
         
         {% for artisan in artisans %}
@@ -127,6 +129,11 @@
                 </div>
             </div>
         {% endfor %}
+            
+        {% else %}
+        <h4 class="text-center form_text my-6">There is no profile available for approval.</h4>
+
+        {% endif %}
             
     {% else %}
         {% if user.userprofile.user_type == "artisan" %}

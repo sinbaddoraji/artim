@@ -176,10 +176,14 @@ def approve_or_block_user_view(request, username, action):
         return redirect('accounts:dashboard')
     
 
-class BlockUsers(ListView):
+class BlockUsers(LoginRequiredMixin, UserPassesTestMixin, ListView):
     context_object_name = 'blocked_artisans'
     template_name = 'accounts/blocked_users.html'
 
     def get_queryset(self):
         queryset = UserProfile.objects.filter(blocked=True)
         return queryset
+
+    def test_func(self):
+        if self.request.user.is_staff:
+            return self.request.user.is_staff
