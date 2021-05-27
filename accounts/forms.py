@@ -134,9 +134,28 @@ class UserProfileForm(forms.ModelForm):
             raise forms.ValidationError(f"You can't select more than 4 services (You selected {len(services)})")
         return services
 
+<<<<<<< HEAD
     def clean(self):
         all_clean = super().clean()
         user_type = all_clean.get("user_type")
         services = all_clean.get("services")
         if user_type == "artisan" and len(services) < 1:
             raise forms.ValidationError("You have to choose at least one service as an ARTISAN")
+=======
+# class Profile(forms.ModelForm):
+#     class Meta:
+#         model = UserProfile
+#         fields = ('phone_number', 'address', 'city', 'post_code') 
+#         widgets = {
+#             'phone_number': forms.TextInput(attrs={'class': 'form-control'}),
+#             'address': forms.TextInput(attrs={'class': 'form-control'}),
+#             'city': forms.TextInput(attrs={'class': 'form-control'}),
+#             'post_code': forms.TextInput(attrs={'class': 'form-control'})
+#         }
+    
+  
+class ChangePassword(forms.Form):
+    old_password = forms.CharField(widget=forms.PasswordInput({'placeholder':'Old Password'}))
+    new_password = forms.CharField(widget=forms.PasswordInput({'placeholder':'New Password'}))
+    repeat_password = forms.CharField(widget=forms.PasswordInput({'placeholder':'Repeat Password'}))
+>>>>>>> 38cc73affc8be3f0a19e2a7c2b532057cbbb581c

@@ -42,8 +42,6 @@ main {
     border-color: #1d79ca;
 }
 
-
-
 .btn-primary {
     color: #fff;
     background-color: #1d79ca;
@@ -107,23 +105,28 @@ main {
     cursor: pointer;
 }
 
-.skills{
+.skills {
     height: 50px;
 }
 
-.star{
+.star {
     color: rgb(243, 171, 38);
 }
 
+<<<<<<< HEAD
 .drop{
     margin-top: 2%;
+=======
+.drop {
+    margin-top: 3%;
+>>>>>>> 38cc73affc8be3f0a19e2a7c2b532057cbbb581c
 }
 
-.profile_pic{
+.profile_pic {
     /* width: 70%; */
 }
 
-.info_div{
-    border: 0.5px solid  #7596b3;
+.info_div {
+    border: 0.5px solid #7596b3;
     border-radius: 6px;
 }
