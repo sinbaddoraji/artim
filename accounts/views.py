@@ -28,7 +28,7 @@ def user_login(request):
 
                 user = authenticate(request, username=username, password=password)
                 if user is not None:
-                    if user.is_active:
+                    if not user.userprofile.blocked:
                         login(request, user)
                         if nextvalue:
                             return redirect(nextvalue)
