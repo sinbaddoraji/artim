@@ -2,9 +2,10 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .forms import UserLoginForm, UserForm, UserProfileForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, UpdateView
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.mixins import LoginRequiredMixin
+from accounts.models import UserProfile
 
 def user_login(request):
     if request.user.is_authenticated:
@@ -80,3 +81,11 @@ class Success(TemplateView):
         if request.user.is_authenticated:
             return redirect('accounts:dashboard')
         return super().get(request, *args, **kwargs)
+
+
+class ProfileUpdateView(UpdateView):
+    model = UserProfile
+    form_class = UserProfileForm
+    slug_field = 'slug'
+    template_name = 'accounts/update_profile.html'
+    success_url = '/account/dashboard/'

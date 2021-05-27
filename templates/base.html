@@ -51,15 +51,15 @@
                                 {% endif %}</span>
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" href="{% url 'accounts:dashboard' %}">Your Dashboard</a></li>
+                                <li><a class="dropdown-item" href="{% url 'accounts:dashboard' %}"><i class="fas fa-id-card"></i> Your Dashboard</a></li>
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>
-                                <li><a class="dropdown-item" href="#">Edit Profile</a></li>
+                                <li><a class="dropdown-item" href="{% url 'accounts:updateprofile' slug=user.userprofile.slug %}"><i class="fas fa-sliders-h"></i> Edit Profile</a></li>
                                 {% if user.userprofile.bank_details%}
                                     <li><a class="dropdown-item" href="#">Edit Bank details</a></li>
                                 {% endif %}
-                                <li><a class="dropdown-item" href="#">Change password</a></li>
+                                <li><a class="dropdown-item" href="{% url 'accounts:changepassword' %}"><i class="fas fa-cogs"></i> Change password</a></li>
                             </ul>
                         </div>
                         <li class="nav-item">
