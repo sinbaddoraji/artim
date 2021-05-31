@@ -39,19 +39,19 @@
     </div>
     <div class="col-8 form_text">
         <h5 class="blue text-center"><strong>Make payment by Credit Card or PayPal</strong></h5>
-    <form method="post">
+    <form method="post" onsubmit="return validateForm()">
         {% csrf_token %}
         <div class="mb-3">
             <div class="row g-2">
                 <div class="col-md-7">
                 <div class="form-floating">
-                    <input type="text" class="form-control" minlength="16" maxlength="16" id="floatingInputGrid" placeholder="Credit card number" value="" onkeypress="return (event.charCode !==8 && event.charCode ===0 || (event.charCode >= 48 && event.charCode <= 57))" required />
-                    <label for="floatingInputGrid">Credit card number</label>
+                    <input type="text" class="form-control" minlength="16" maxlength="16" id="ccNum" placeholder="Credit card number" oninput="cardPlaceHolder()" value="" onval onkeypress="return (event.charCode !==8 && event.charCode ===0 || (event.charCode >= 48 && event.charCode <= 57))" required />
+                    <label for="ccNum" id="ccNumL">Credit card number</label>
                 </div>
                 </div>
                 <div class="col-md-3">
                 <div class="form-floating">
-                    <input type="text" class="form-control" id="floatingInputGrid" minlength="4" maxlength="4" placeholder="MMYY" onkeypress="return (event.charCode !==8 && event.charCode ===0 || (event.charCode >= 48 && event.charCode <= 57))" required />
+                    <input id="datefield" class="form-control" type='date' min='1899-01-01' max='2000-13-13' placeholder="MMYY" ></input>
                     <label for="floatingSelectGrid">Exp Date (MMYY)</label>
                 </div>
                 </div>
@@ -76,28 +76,113 @@
             <label for="floatingInput">Billing postcode</label>
         </div>
         <div class="text-center">
-            <button class="btn btn-primary my-2" type="submit"><strong>MAKE PAYMENT OF 	&#163;{{price}}</strong></button>
+            <button class="btn btn-primary my-2" onclick="pay"><strong>MAKE PAYMENT OF 	&#163;{{price}}</strong></button>
         </div>
     </form>
     <div class="text-center">
         {{ form.render }}
     </div>
+    <P id = "errorMessage" style="color: red;"></P>
 </div>
 <br>
 <script>
-    var services = document.getElementById("services");
-    services.style.display = "none";
-    function toggler() {
-        var selected;
-        var radio1 = document.getElementById("user_type_0");
-        var radio2 = document.getElementById("user_type_1");
-        if (radio1.checked) {
-            selected = radio1.value;
-            services.style.display = "none";
-        } else if(radio2.checked) {
-            selected = radio2.value;
-            services.style.display = "block";
-        }
-        }
+var today = new Date();
+var dd = today.getDate();
+var mm = today.getMonth()+1; //January is 0!
+var yyyy = today.getFullYear();
+if(dd<10){
+    dd='0'+dd
+} 
+if(mm<10){
+    mm='0'+mm
+} 
+
+today = yyyy+'-'+mm+'-'+dd;
+document.getElementById("datefield").setAttribute("min", today);
+
+function validateForm() {
+    cValue = document.getElementById('ccNum').value;
+    var cardType = IsValidCreditCardNumber(cValue);
+    if(cardType == null)
+    {
+        document.getElementById("errorMessage").innerHTML = "Invalid card number";
+        return false;
+    }
+    else
+    {
+        document.getElementById("errorMessage").innerHTML = "";
+    }
+}
+
+function cardPlaceHolder()
+{
+    cardNumber = document.getElementById('ccNum').value;
+    t = "Credit card number"
+    if (VisaCardnumber(cardNumber)) 
+    {
+        t += " (Visa)";
+    } 
+    else if (MasterCardnumber(cardNumber)) {
+        t += " (Mastercard)";
+    } 
+    else if (AmexCardnumber(cardNumber)) {
+        t += " (American Express)";
+    } 
+    else if (DiscoverCardnumber(cardNumber)) {
+        t += " (Discover)";
+    } 
+    else if (DinerClubCardnumber(cardNumber)) {
+        t += " (Dinerclub)";
+    } 
+    else if (JCBCardnumber(cardNumber)) {
+        t += " (Jcb)";
+    }
+
+    document.getElementById('ccNumL').innerHTML = t;
+    document.getElementById('ccNum').placeholder = t;
+}
+
+function AmexCardnumber(inputtxt) {
+  var card_number = /^(?:3[47][0-9]{13})$/;
+  return card_number.test(inputtxt);
+}
+
+function VisaCardnumber(inputtxt) {
+  var card_number = /^(?:4[0-9]{12}(?:[0-9]{3})?)$/;
+  return card_number.test(inputtxt);
+}
+
+function MasterCardnumber(inputtxt) {
+  var card_number = /^(?:5[1-5][0-9]{14})$/;
+  return card_number.test(inputtxt);
+}
+
+function DiscoverCardnumber(inputtxt) {
+  var card_number = /^(?:6(?:011|5[0-9][0-9])[0-9]{12})$/;
+  return card_number.test(inputtxt);
+}
+
+function DinerClubCardnumber(inputtxt) {
+  var card_number = /^(?:3(?:0[0-5]|[68][0-9])[0-9]{11})$/;
+  return card_number.test(inputtxt);
+}
+
+function JCBCardnumber(inputtxt) {
+  var card_number = /^(?:(?:2131|1800|35\d{3})\d{11})$/;
+  return card_number.test(inputtxt);
+}
+
+function IsValidCreditCardNumber(cardNumber) {
+
+  if (VisaCardnumber(cardNumber)) {} 
+  else if (MasterCardnumber(cardNumber)) {} 
+  else if (AmexCardnumber(cardNumber)) {} 
+  else if (DiscoverCardnumber(cardNumber)) {} 
+  else if (DinerClubCardnumber(cardNumber)) {} 
+  else if (JCBCardnumber(cardNumber)) {}
+  return null;
+
+  return 'valid';
+}
 </script>
 {% endblock body %}
