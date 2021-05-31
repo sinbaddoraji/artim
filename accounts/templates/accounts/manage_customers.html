@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load django_bootstrap5 %}
+{% load static %}
+{% load accounts_tag %}
+{% block title %}
+    Manage Customers
+{% endblock title %}
+
+{% block body %}
+<div class="row">
+    <div class="col-4 text-center">
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-10">
+                <img src="{% static "images/male.jpg" %}" class="img-fluid img-thumbnail rounded-circle"
+                    alt="{{user.first_name}}">
+            </div>
+            <div class="col-md-1"></div>
+        </div>
+            <h4 class="form_text">{{user.first_name.title}} {{user.last_name.title}}</h4>
+            <i class="fas fa-user-tag form_text my-2"></i> <strong>{{user.username}}</strong><br />
+            <span class="form_text my-1"><strong>Joined:</strong></span> <strong>{{user.date_joined}}</strong><br />
+    </div>
+    <div class="col-8">
+        {% if customers.count > 0 %}
+        <h4>There are <span class="form_text">{{customers.count}}</span> CUSTOMERS registered on the site.</h4>
+        
+            {% for customer in customers %}
+                <div class="card p-3 my-3">
+                    <div class="row">
+                        <div class="col">
+                            <strong class="form_text" style="font-size: 1.3rem;">{{customer.user.first_name.title}} {{customer.user.last_name.title}}</strong>
+                        </div>
+                        <div class="col">
+                            <i class="fas fa-map-marker-alt form_text"></i> <strong style="color: black;">{{customer.city.title}}, UK</strong>
+                        </div>
+                        <div class="col">
+                            <i class="far fa-calendar-alt form_text my-2"></i> <strong>{{customer.age}} years old</strong><br />
+                        </div>
+                        <div class="col">
+                            <i class="fas fa-venus-mars form_text my-2"></i> <strong>{{customer.gender.title}}</strong><br />
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 d-grid gap-2">
+                            <a class="btn btn-success" href="{% url 'user-detail' user_type=customer.user_type slug=customer.user.username %}"><strong><i class="fas fa-eye"></i> VIEW {{artisan.user.first_name.upper}}'s PROFILE</strong></a>
+                        </div>
+                        <div class="col-md-6 d-grid gap-2">
+                            <a class="btn btn-danger" href="{% url 'accounts:approve_or_block' username=customer.user.username action="block" %}"><strong><i class="fas fa-ban"></i> BLOCK {{artisan.user.first_name.upper}}</strong></a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+            
+        {% else %}
+        <div class="text-center form_text mt-6">
+            <h4>No CUSTOMER is registered on the site.</h4>
+        </div>
+        {% endif %}   
+
+    </div>
+</div>
+<br>
+{% endblock body %}

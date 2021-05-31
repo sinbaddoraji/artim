@@ -1,4 +1,11 @@
-{% extends 'base.html' %} {% load django_bootstrap5 %} {% load static %} {% load accounts_tag %} {% block body %}
+{% extends 'base.html' %} {% load django_bootstrap5 %} {% load static %} {% load accounts_tag %} 
+{% block title %}
+    Edit profile
+{% endblock title %}
+
+
+
+{% block body %}
 <div class="row">
     <div class="col-4 text-center">
         <div class="row">
@@ -56,7 +63,16 @@
                 {% else %}
                     You don't have reviews yet
                 {% endif %}
-                </strong> {% else %} {% endif %} {% endif %}
+                </strong> 
+            {% else %} 
+                <h4 class="form_text">{{user.first_name.title}} {{user.last_name.title}}</h4>
+                <span class="form_text my-1"><strong>Joined:</strong></span> <strong>{{user.date_joined}}</strong><br />
+                <i class="fas fa-user-tag form_text my-2"></i> <strong>{{user.username}}</strong><br />
+                <i class="far fa-calendar-alt form_text my-2"></i> <strong>{{user.userprofile.age}} years old</strong><br />
+                <i class="fas fa-venus-mars form_text my-2"></i> <strong>{{user.userprofile.gender.title}}</strong><br />
+                <i class="fas fa-map-marker-alt form_text my-2"></i> <strong>{{user.userprofile.city.title}}, UK</strong>
+            {% endif %} 
+        {% endif %}
     </div>
     <div class="col-8">
         <div class="row">

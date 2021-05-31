@@ -123,7 +123,7 @@ class UserProfileForm(forms.ModelForm):
 
     class Meta:
         model = UserProfile
-        exclude = ['user', 'payment_details', 'bank_details', 'slug', 'artisan_approved']
+        exclude = ['user', 'payment_details', 'bank_details', 'slug', 'artisan_approved', 'blocked']
         widgets = {
             'phone_number': forms.TextInput(attrs={'id':'phone_number', 'maxlength':11, 'onkeypress':'return (event.charCode !==8 && event.charCode ===0 || (event.charCode >= 48 && event.charCode <= 57))'}),
         }

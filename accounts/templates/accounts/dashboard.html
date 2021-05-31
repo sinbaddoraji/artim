@@ -2,6 +2,9 @@
 {% load django_bootstrap5 %}
 {% load static %}
 {% load accounts_tag %}
+{% block title %}
+    Your Dashboard
+{% endblock title %}
 
 {% block body %}
 <div class="row">
@@ -25,9 +28,21 @@
             <div class="col-md-1"></div>
         </div>
         {% if user.is_staff %}
+            <h5><span class="badge bg-success">ADMIN</span></h5>
+        {% else %} 
+        {% if user.userprofile.user_type == "artisan" %}
+            <h5><span class="badge bg-primary">ARTISAN</span></h5>
+        {% else %}
+            <h5><span class="badge bg-info">CUSTOMER</span></h5>
+        {% endif %} 
+        {% endif %} 
+        {% if user.is_staff %}
             <h4 class="form_text">{{user.first_name.title}} {{user.last_name.title}}</h4>
             <i class="fas fa-user-tag form_text my-2"></i> <strong>{{user.username}}</strong><br />
             <span class="form_text my-1"><strong>Joined:</strong></span> <strong>{{user.date_joined}}</strong><br />
+            <span class="form_text my-1"><strong>Total Users registered:</strong></span> <strong>{{usercount}}</strong><br />
+            <span class="form_text my-1"><strong>Artisans registered:</strong></span> <strong>{{artisancount}}</strong><br />
+            <span class="form_text my-1"><strong>Customers registered:</strong></span> <strong>{{customercount}}</strong><br />
         {% else %}
             {% if user.userprofile.user_type == "artisan" %}
                 <h4 class="form_text">{{user.first_name.title}} {{user.last_name.title}}</h4>
@@ -91,14 +106,20 @@
                 {% endif %}
                 </strong>
             {% else %}
-                
+            <h4 class="form_text">{{user.first_name.title}} {{user.last_name.title}}</h4>
+            <span class="form_text my-1"><strong>Joined:</strong></span> <strong>{{user.date_joined}}</strong><br />
+            <i class="fas fa-user-tag form_text my-2"></i> <strong>{{user.username}}</strong><br />
+            <i class="far fa-calendar-alt form_text my-2"></i> <strong>{{user.userprofile.age}} years old</strong><br />
+            <i class="fas fa-venus-mars form_text my-2"></i> <strong>{{user.userprofile.gender.title}}</strong><br />
+            <i class="fas fa-map-marker-alt form_text my-2"></i> <strong>{{user.userprofile.city.title}}, UK</strong>
+        
             {% endif %}
         {% endif %}
     </div>
     <div class="col-8">
     {% if user.is_staff %}
         
-        {% if artisans.count > 0 %}
+        {% if artisan.count > 0 %}
         <h4>There are <span class="form_text">{{artisans.count}}</span> Artisans waiting for approval</h4>
         
         {% for artisan in artisans %}

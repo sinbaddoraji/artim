@@ -3,14 +3,14 @@ from django.contrib.auth.models import User
 from .forms import UserLoginForm, UserForm, UserProfileForm
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.views.generic import TemplateView, UpdateView, DeleteView, RedirectView, ListView
+from django.views.generic import TemplateView, UpdateView, DeleteView, RedirectView, ListView, CreateView
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
-from accounts.models import UserProfile
+from .models import UserProfile
 from django.core.mail import send_mail
 
 def user_login(request):
@@ -87,7 +87,6 @@ def userlogout(request):
 
 
 class Dashboard(LoginRequiredMixin, TemplateView):
-    login_url = 'accounts:login'
     template_name = 'accounts/dashboard.html'
 
     def get_context_data(self, **kwargs):
@@ -95,6 +94,9 @@ class Dashboard(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         queryset = UserProfile.objects.filter(artisan_approved=False).filter(blocked=False)
         context['artisans'] = queryset
+        context['usercount'] = UserProfile.objects.count()
+        context['customercount'] = UserProfile.objects.filter(user_type="customer").count()
+        context['artisancount'] = UserProfile.objects.filter(user_type="artisan").count()
         return context
 
 class Success(TemplateView):
@@ -187,3 +189,39 @@ class BlockUsers(LoginRequiredMixin, UserPassesTestMixin, ListView):
     def test_func(self):
         if self.request.user.is_staff:
             return self.request.user.is_staff
+
+
+class ManageArtisansView(LoginRequiredMixin, UserPassesTestMixin, ListView):
+    context_object_name = 'artisans'
+    template_name = 'accounts/manage_artisans.html'
+
+    def get_queryset(self):
+        queryset = UserProfile.objects.filter(user_type='artisan')
+        return queryset
+
+    def test_func(self):
+        if self.request.user.is_staff:
+            return self.request.user.is_staff
+
+
+class ManageCustomersView(LoginRequiredMixin, UserPassesTestMixin, ListView):
+    context_object_name = 'customers'
+    template_name = 'accounts/manage_customers.html'
+
+    def get_queryset(self):
+        queryset = UserProfile.objects.filter(user_type='customer')
+        return queryset
+
+    def test_func(self):
+        if self.request.user.is_staff:
+            return self.request.user.is_staff
+
+class AdminDeleteUserView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessageMixin, DeleteView):
+    model = User
+    slug_field = 'username'
+    success_url = reverse_lazy('accounts:dashboard')
+    
+    def test_func(self):
+        if self.request.user.is_staff:
+            return self.request.user.is_staff
+

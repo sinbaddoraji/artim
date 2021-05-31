@@ -2,6 +2,9 @@
 {% load django_bootstrap5 %}
 {% load static %}
 {% load accounts_tag %}
+{% block title %}
+    Add your bank details
+{% endblock title %}
 
 {% block body %}
 <div class="row">
@@ -123,7 +126,10 @@
                         </div>
                     </div>
                     {% if error %}
-                        <p class="text-center mt-2" style="color: red;">{{error}}.</p>
+                        <div class="alert alert-danger alert-dismissible fade show mt-2 text-center" role="alert">
+                            {{error}}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
                     {% endif %}
                     <div class="d-grid gap-2 mt-2">
                         <button class="btn btn-primary" type="submit"><strong>ADD BANK DETAILS</strong></button>

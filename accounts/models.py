@@ -22,7 +22,7 @@ class UserProfile(models.Model):
     services = models.CharField(max_length=100, null=True, blank=True)
     artisan_approved = models.BooleanField(default=False)
     blocked = models.BooleanField(default=False)
-    price = models.DecimalField(decimal_places=2, max_digits=10)
+    price = models.DecimalField(decimal_places=2, max_digits=10, blank=True, null=True)
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         self.slug = slugify(self.user.username)
@@ -60,16 +60,6 @@ class Review(models.Model):
     comment = models.TextField()
     review_date = models.DateTimeField(default=timezone.now)
 
-
-class Order(models.Model):
-    customer_order = models.ForeignKey(UserProfile, related_name='customer_order', on_delete=models.CASCADE)
-    artisan_order = models.ForeignKey(UserProfile, related_name='artisan_order', on_delete=models.CASCADE)
-    service = models.CharField(max_length=100)
-    order_date = models.DateTimeField(auto_now_add=True)
-    order_price = models.DecimalField(decimal_places=2, max_digits=10)
-    completed = models.DateTimeField(blank=True, null=True)
-    accepted = models.BooleanField(default=False)
-    rejected = models.BooleanField(default=False)
 
 
 class SavedOrder(models.Model):

@@ -31,9 +31,10 @@ urlpatterns = [
         auth_views.PasswordResetCompleteView.as_view(template_name='password_reset_complete.html'),
         name='password_reset_complete'
     ),
+    path('', redirect_to_home),
     path('<slug>/', HomePage.as_view(), name='index'),
     path('account/', include('accounts.urls')),
-    path('', redirect_to_home),
+    path('order/', include('order.urls')),
     path('profile/<str:user_type>/<slug:slug>/', UserDetailView.as_view(), name='user-detail'),
     path('user/goodbye/', goodbye, name='goodbye'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

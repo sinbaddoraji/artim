@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% load django_bootstrap5 %}
 {% load static %}
+{% block title %}
+    Registration Successfull
+{% endblock title %}
+
 
 {% block body %}
 <br>
@@ -11,7 +15,7 @@
         <h1><i class="far fa-check-circle fa-3x"></i></h1>
         <h4>You're welcome {{info.title}}</h4>
         <h5>Your account has been created successfully</h5>
-        <a href="{% url 'accounts:login' %}"><button class="btn btn-outline-primary btn-lg">SIGN IN</button></a>
+        <a href="{% url 'accounts:dasboard' %}"><button class="btn btn-outline-primary btn-lg">GO BACK TO MY PROFILE</button></a>
     </div>
 </div>
 {% endblock body %}

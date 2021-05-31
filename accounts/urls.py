@@ -16,4 +16,7 @@ urlpatterns = [
     path('addbankaccount/', views.add_bank_details, name='add_bank_details'),
     path('admin/<slug:username>/<slug:action>/', views.approve_or_block_user_view, name='approve_or_block'),
     path('admin/blockedusers/', views.BlockUsers.as_view(), name='blocked_users'),
+    path('admin/manageartisans/', views.ManageArtisansView.as_view(), name='manage_artisans'),
+    path('admin/managecustomers/', views.ManageCustomersView.as_view(), name='manage_customers'),
+    path('admindeleteuser/<slug:slug>/', views.AdminDeleteUserView.as_view(), name='admin_deleteaccount'),
 ]

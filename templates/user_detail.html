@@ -3,6 +3,10 @@
 {% load static %}
 {% load accounts_tag %}
 {% load humanize %}
+{% block title %}
+    {{object.user.first_name}}'s profile 
+{% endblock title %}
+    
 
 {% block body %}
 <div class="row">
@@ -97,6 +101,7 @@
                 {% endif %}
             </div>
             {% endif %}
+            {% if not user.is_staff %}
             <div>
                 <a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button mx-2" data-size="large"
                     data-text="Check out this artisan" data-url="{{request.get_host}}{{request.get_full_path}}"
@@ -105,6 +110,7 @@
 
                 <a href="https://wa.me/?text=Check%20out%20{{object.user.first_name}}%20at%20{{request.get_host}}{{request.get_full_path}}" class="mx-2 text-success"><i class="fab fa-whatsapp fa-2x"></i></a>
             </div>
+            {% endif %}
             {% else %}
                 <h4 class="form_text">{{object.user.first_name.title}} {{object.user.last_name.title}}</h4>
                 <span class="form_text my-1"><strong>Joined:</strong></span> <strong>{{object.user.date_joined}}</strong><br />
@@ -116,70 +122,88 @@
         {% endif %}
     </div>
     <div class="col-8">
-    {% if object.get_total_reviews < 1 %}
-        <div class="alert alert-warning text-center" role="alert">
-            <p><strong>{{object.user.first_name.title}} has no reviews yet. Why don't you be the first to review {% if object.gender == "male" %}him.{% else %}her.{% endif %}</strong></p>
-            <a href="#"><button class="btn btn-warning mt-2"><strong><i class="far fa-edit"></i> RATE {{object.user.first_name.upper}}</strong></button></a>
-        </div>
-    {% else %}
-        <div class="d-flex justify-content-between">
-            <div style="font-size: x-large; font-weight: 600;" class="p-2">{{object.user.first_name}} has <span class="blue">{{object.get_total_reviews}}</span> review{{ object.get_total_reviews|pluralize }}</div>
-            <div class="p-2 c"><a href="#"><button class="btn btn-primary mr-2"><strong><i class="far fa-thumbs-up"></i> ORDER {{object.user.first_name.upper}}'s SERVICE</strong></button></a> <a href="#"><button class="btn btn-warning ml-2"><strong><i class="far fa-edit"></i> RATE {{object.user.first_name.upper}}</strong></button></a></div>
-        </div>
-        {% for review in object.artisan_review.all reversed %}
-            <div class="my-3">
-                <div class="star">
-                    {% if review.rating >= 1 %}
-                    <i class="fas fa-star"></i>
-                    {% elif review.rating >= 0.5 %}
-                    <i class="fas fa-star-half-alt"></i>
-                    {% else %}
-                    <i class="far fa-star"></i>
-                    {% endif %}
+        {% if object.user_type == "artisan" %}
+            {% if object.get_total_reviews < 1 %}
+                <div class="alert alert-warning text-center" role="alert">
+                    <p><strong>{{object.user.first_name.title}} has no reviews yet. Why don't you be the first to review {% if object.gender == "male" %}him.{% else %}her.{% endif %}</strong></p>
                     
-                    {% if review.rating >= 2 %}
-                    <i class="fas fa-star"></i>
-                    {% elif review.rating >= 1.5 %}
-                    <i class="fas fa-star-half-alt"></i>
+                    {% if user.is_staff %}
+                        <a class="btn btn-danger" href="{% url 'accounts:approve_or_block' username=object.user.username action="block" %}"><strong><i class="fas fa-ban"></i> BLOCK {{object.user.first_name.upper}}</strong></a>
                     {% else %}
-                    <i class="far fa-star"></i>
-                    {% endif %}
-                    
-                    {% if review.rating >= 3 %}
-                    <i class="fas fa-star"></i>
-                    {% elif review.rating >= 2.5 %}
-                    <i class="fas fa-star-half-alt"></i>
-                    {% else %}
-                    <i class="far fa-star"></i>
-                    {% endif %}
-                    
-                    {% if review.rating >= 4 %}
-                    <i class="fas fa-star"></i>
-                    {% elif review.rating >= 3.5 %}
-                    <i class="fas fa-star-half-alt"></i>
-                    {% else %}
-                    <i class="far fa-star"></i>
-                    {% endif %}
-                    
-                    {% if review.rating >= 5 %}
-                    <i class="fas fa-star"></i>
-                    {% elif review.rating >= 4.5 %}
-                    <i class="fas fa-star-half-alt"></i>
-                    {% else %}
-                    <i class="far fa-star"></i>
+                        {% if user.userprofile.user_type == "customer"%}
+                        <a href="#"><button class="btn btn-warning mx-2"><strong><i class="far fa-edit"></i> RATE {{object.user.first_name.upper}}</strong></button></a>
+                            <a href="{% url 'orders:place_order' slug=object.user.username %}"><button class="btn btn-primary mx-2"><strong><i class="far fa-thumbs-up"></i> ORDER {{object.user.first_name.upper}}'s SERVICE</strong></button></a>
+                        {% endif %}
                     {% endif %}
                 </div>
-                <div style="font-weight: 400; font-family: sans-serif;">
-                    {{review.comment}}
+            {% else %}
+                <div class="d-flex justify-content-between">
+                    <div style="font-size: x-large; font-weight: 600;" class="p-2">{{object.user.first_name}} has <span class="blue">{{object.get_total_reviews}}</span> review{{ object.get_total_reviews|pluralize }}</div>
+                    {% if user.is_staff %}
+                    <div><a class="btn btn-danger" href="{% url 'accounts:approve_or_block' username=object.user.username action="block" %}"><strong><i class="fas fa-ban"></i> BLOCK {{object.user.first_name.upper}}</strong></a></div>
+                    {% else %}
+                        {% if user.userprofile.user_type == "customer" %}
+                            <div class="p-2 c"><a href="{% url 'orders:place_order' slug=object.user.username %}"><button class="btn btn-primary mr-2"><strong><i class="far fa-thumbs-up"></i> ORDER {{object.user.first_name.upper}}'s SERVICE</strong></button></a> <a href="#"><button class="btn btn-warning ml-2"><strong><i class="far fa-edit"></i> RATE {{object.user.first_name.upper}}</strong></button></a></div>
+                        {% endif %}
+                    {% endif %}
                 </div>
-                <div>By <em><strong>{{review.customer_review.user.first_name}}</strong></em> on {{review.review_date}}</div>
-                <hr>
-            </div>
-        {% endfor %}
-            
-    {% endif %}
-        
-        
+                {% for review in object.artisan_review.all reversed %}
+                    <div class="my-3">
+                        <div class="star">
+                            {% if review.rating >= 1 %}
+                            <i class="fas fa-star"></i>
+                            {% elif review.rating >= 0.5 %}
+                            <i class="fas fa-star-half-alt"></i>
+                            {% else %}
+                            <i class="far fa-star"></i>
+                            {% endif %}
+                            
+                            {% if review.rating >= 2 %}
+                            <i class="fas fa-star"></i>
+                            {% elif review.rating >= 1.5 %}
+                            <i class="fas fa-star-half-alt"></i>
+                            {% else %}
+                            <i class="far fa-star"></i>
+                            {% endif %}
+                            
+                            {% if review.rating >= 3 %}
+                            <i class="fas fa-star"></i>
+                            {% elif review.rating >= 2.5 %}
+                            <i class="fas fa-star-half-alt"></i>
+                            {% else %}
+                            <i class="far fa-star"></i>
+                            {% endif %}
+                            
+                            {% if review.rating >= 4 %}
+                            <i class="fas fa-star"></i>
+                            {% elif review.rating >= 3.5 %}
+                            <i class="fas fa-star-half-alt"></i>
+                            {% else %}
+                            <i class="far fa-star"></i>
+                            {% endif %}
+                            
+                            {% if review.rating >= 5 %}
+                            <i class="fas fa-star"></i>
+                            {% elif review.rating >= 4.5 %}
+                            <i class="fas fa-star-half-alt"></i>
+                            {% else %}
+                            <i class="far fa-star"></i>
+                            {% endif %}
+                        </div>
+                        <div style="font-weight: 400; font-family: sans-serif;">
+                            {{review.comment}}
+                        </div>
+                        <div>By <em><strong>{{review.customer_review.user.first_name}}</strong></em> on {{review.review_date}}</div>
+                        <hr>
+                    </div>
+                {% endfor %}
+                    
+            {% endif %}
+        {% else %}
+            {% if user.is_staff %}
+                <h3>Display what admin can see about user</h3>
+            {% endif %}
+        {% endif %}
     </div>
 </div>
 <br>

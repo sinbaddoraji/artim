@@ -41,9 +41,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'django_bootstrap5',
+    'paypal.standard.ipn',
 
     'accounts.apps.AccountsConfig',
     'payments.apps.PaymentsConfig',
+    'order.apps.OrderConfig',
+
     'multiselectfield',
     'django.contrib.humanize'
 ]
@@ -174,3 +177,9 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_URL = 'accounts:login'
+
+PAYPAL_RECEIVER_EMAIL = 'sb-j9mb36372793@business.example.com'
+
+PAYPAL_TEST = True
+
+PAYPAL_BUY_BUTTON_IMAGE = 'https://www.paypalobjects.com/webstatic/en_US/i/buttons/checkout-logo-large.png'
