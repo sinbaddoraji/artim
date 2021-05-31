@@ -48,7 +48,7 @@
                             <a class="btn btn-success" href="{% url 'user-detail' user_type=artisan.user_type slug=artisan.user.username %}"><strong><i class="fas fa-eye"></i> VIEW {{artisan.user.first_name.upper}}'s PROFILE</strong></a>
                         </div>
                         <div class="col-md-6 d-grid gap-2">
-                            <a class="btn btn-warning" href="{% url 'accounts:approve_or_block' username=artisan.user.username action="block" %}"><strong><i class="fas fa-ban"></i> BLOCK {{artisan.user.first_name.upper}}</strong></a>
+                            <a class="btn btn-danger" href="{% url 'accounts:approve_or_block' username=artisan.user.username action="block" %}"><strong><i class="fas fa-ban"></i> BLOCK {{artisan.user.first_name.upper}}</strong></a>
                         </div>
                     </div>
                 </div>

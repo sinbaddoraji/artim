@@ -174,10 +174,143 @@
                     <p class="text-center my-3"><a href="{% url 'accounts:add_bank_details' %}"><button class="btn btn-danger"><strong><i class="fas fa-plus-square"></i> ADD BANK DETAILS</strong></button></a></p>
                 </div>
             {% else %}
-                
+            {% if artisan_orders.count < 1 %}
+            <div class="text-center my-5">
+                <h4 class="form_text">You are yet to receive a request from a customer. Please check back</h4>
+            </div>
+            {% else %}
+                <div class="text-center my-3">
+                    <h4 class="form_text">Your requests from customers</h4>
+                </div>
+                {% for order in artisan_orders reversed%}
+                    {% if order.order_accepted %}
+                        <div class="accepted">
+                            <div class="d-flex justify-content-between">
+                                    <div class="col"><i class="fas fa-user-tag form_text my-2"></i> <strong>{{order.customerorder.user.first_name.title}} {{order.customerorder.user.last_name.title}}</strong></div>
+                                {% if order.order_completed %}    
+                                    <div class="accepted_text"><span class="badge bg-success"><strong style="font-size: larger;">COMPLETED</strong></span></div>
+                                {% else %}
+                                    <div class="accepted_text"><strong>ACCEPTED</strong></div>
+                                {% endif %}
+                            </div>
+                            <h5><i class="fas fa-tools form_text"></i> {{order.service.title}} at <i class="fas fa-pound-sign form_text"></i><span style="color: black;">{{order.order_price}}/hr</span></h5>
+                            <div style="font-weight: 600; font-style: italic; font-size: large;">
+                                <i class="fas fa-pen-square form_text"></i> {{order.message}}
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4"><i class="fas fa-phone form_text"></i> <strong>{{order.customerorder.phone_number}}</strong></div>
+                                <div class="col-md-4"></div>
+                                <div class="col-md-4"></div>
+                            </div>
+                            <div>
+                                <i class="fas fa-map-marker-alt form_text my-2"></i> <strong>{{order.customerorder.address.title}}, {{order.customerorder.city.title}}, {{order.customerorder.post_code.upper}} UK</strong>
+                            </div>
+                            {% if order.order_completed %}    
+                            <span class="accepted_text" style="font-weight: 700;">{{order.customerorder.user.first_name.title}} has marked this request as completed, your funds have been deposited to your account.</span>
+                            {% else %}
+                            <span class="accepted_text" style="font-weight: 700;">Thank you for accepting this request, you must call {{order.customerorder.user.first_name.title}} within the next 24 hours.</span>
+                            {% endif %}
+                            
+                        </div>
+                    {% elif order.order_rejected %}
+                        <div class="rejected">
+                            <div class="d-flex justify-content-between">
+                                    <div class=""><a style="text-decoration: none;" class="form_text" href="{% url 'user-detail' user_type=order.artisanorder.user_type slug=order.artisanorder.user.username %}"><i class="fas fa-user-tag form_text my-2"></i> <strong>{{order.artisanorder.user.username}}</strong></a></div>
+                                 
+                                <div class="rejected_text"><strong>REJECTED</strong></div>
+                            </div>
+                            <h5><i class="fas fa-tools form_text"></i> {{order.service.title}} at <i class="fas fa-pound-sign form_text"></i><span style="color: black;">{{order.order_price}}/hr</span></h5>
+                            <div style="font-weight: 600; font-style: italic; font-size: large;">
+                                <i class="fas fa-pen-square form_text"></i> {{order.message}}
+                            </div>
+                            <span class="rejected_text" style="font-weight: 700;">We are sorry, {{order.artisanorder.user.first_name.title}} has rejected your request, please check for another Artisan.</span>
+                        </div>
+                    {% else %}
+                        <div class="pending">
+                            <div class="d-flex justify-content-between">
+                                    <div class="col">Request from <span class="form_text" ><strong style="font-size: larger;">{{order.customerorder.user.username}}</strong></span></div>
+                               <div class="pending_text"><strong>PENDING</strong></div>
+                            </div>
+                            <h5><i class="fas fa-tools form_text"></i> {{order.service.title}} at <i class="fas fa-pound-sign form_text"></i><span style="color: black;">{{order.order_price}}/hr</span></h5>
+                            <div style="font-weight: 600; font-style: italic; font-size: large;">
+                                <i class="fas fa-pen-square form_text"></i> {{order.message}}
+                            </div>
+                            <div class="row my-2">
+                                <div class="col-md-6 d-grid gap-2">
+                                    <a class="btn btn-success" href="{% url 'orders:accept_or_reject' action="accept" order=order.pk %}"><strong><i class="fas fa-vote-yea"></i> ACCEPT REQUEST</strong></a>
+                                </div>
+                                <div class="col-md-6 d-grid gap-2">
+                                    <a class="btn btn-danger" href="{% url 'orders:accept_or_reject' action="reject" order=order.pk %}"><strong><i class="far fa-window-close"></i> REJECT REQUEST</strong></a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
             {% endif %}
-        {% else %}
+            {% endif %}
             
+        {% else %}
+            {% if customer_orders.count < 1 %}
+            <div class="text-center my-5">
+                <h4 class="form_text">You are yet to request an Artisan's service.</h4>
+                <a href="{% url 'index' slug="home" %}"><button class="btn btn-outline-primary">BROWSE ARTISANS</button></a>
+            </div>
+            {% else %}
+                {% for order in customer_orders reversed%}
+                    {% if order.order_accepted %}
+                        <div class="accepted">
+                            <div class="d-flex justify-content-between">
+                                    <div class="col"><a style="text-decoration: none;" class="form_text" href="{% url 'user-detail' user_type=order.artisanorder.user_type slug=order.artisanorder.user.username %}"><i class="fas fa-user-tag form_text my-2"></i> <strong style="font-size: larger;">{{order.artisanorder.user.username}}</strong></a></div>
+                                {% if order.order_completed %}    
+                                    <div class="accepted_text"><span class="badge bg-success"><strong style="font-size: larger;">COMPLETED</strong></span></div>
+                                {% else %}
+                                <div class="accepted_text"><strong>ACCEPTED</strong></div>
+                                {% endif %}
+                            </div>
+                            <h5><i class="fas fa-tools form_text"></i> {{order.service.title}} at <i class="fas fa-pound-sign form_text"></i><span style="color: black;">{{order.order_price}}/hr</span></h5>
+                            <div style="font-weight: 600; font-style: italic; font-size: large;">
+                                <i class="fas fa-pen-square form_text"></i> {{order.message}}
+                            </div>
+                            {% if not order.order_completed %}
+                                <span class="accepted_text" style="font-weight: 700;">{{order.artisanorder.user.first_name.title}} has accepted your request, expect a call within the next 24 hours</span>
+                            {% else %}
+                                <h6 class="mt-2"><span class="accepted_text" style="font-weight: 700;">You marked this order as completed on</span> <span style="font-weight: 700;">{{order.completed_date}}</span></h6>
+                            {% endif %}
+                            {% if not order.order_completed %}
+                            <a href="{% url 'orders:accept_or_reject' action="completed" order=order.pk %}" style="text-decoration: none;">
+                                <div class="d-grid gap-2 my-2">
+                                    <button class="btn btn-success"><strong><i class="fas fa-check-double"></i> MARK AS COMPLETED</strong></button>
+                                </div></a>
+                            {% endif %}
+                        </div>
+                    {% elif order.order_rejected %}
+                        <div class="rejected">
+                            <div class="d-flex justify-content-between">
+                                    <div class=""><a style="text-decoration: none;" class="form_text" href="{% url 'user-detail' user_type=order.artisanorder.user_type slug=order.artisanorder.user.username %}"><i class="fas fa-user-tag form_text my-2"></i> <strong>{{order.artisanorder.user.username}}</strong></a></div>
+                                 
+                                <div class="rejected_text"><strong>REJECTED</strong></div>
+                            </div>
+                            <h5><i class="fas fa-tools form_text"></i> {{order.service.title}} at <i class="fas fa-pound-sign form_text"></i><span style="color: black;">{{order.order_price}}/hr</span></h5>
+                            <div style="font-weight: 600; font-style: italic; font-size: large;">
+                                <i class="fas fa-pen-square form_text"></i> {{order.message}}
+                            </div>
+                            <span class="rejected_text" style="font-weight: 700;">We are sorry, {{order.artisanorder.user.first_name.title}} has rejected your request, please check for another Artisan.</span>
+                        </div>
+                    {% else %}
+                        <div class="pending">
+                            <div class="d-flex justify-content-between">
+                                    <div class="col"><a style="text-decoration: none;" class="form_text" href="{% url 'user-detail' user_type=order.artisanorder.user_type slug=order.artisanorder.user.username %}"><i class="fas fa-user-tag form_text my-2"></i> <strong style="font-size: larger;">{{order.artisanorder.user.username}}</strong></a></div>
+                               <div class="pending_text"><strong>PENDING</strong></div>
+                            </div>
+                            <h5><i class="fas fa-tools form_text"></i> {{order.service.title}} at <i class="fas fa-pound-sign form_text"></i><span style="color: black;">{{order.order_price}}/hr</span></h5>
+                            <div style="font-weight: 600; font-style: italic; font-size: large;">
+                                <i class="fas fa-pen-square form_text"></i> {{order.message}}
+                            </div>
+                            <span class="pending_text" style="font-weight: 700;">{{order.artisanorder.user.first_name.title}} is yet to accept your request, you will be notified once your request has been accepted.</span>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
         {% endif %}
     {% endif %}
     </div>

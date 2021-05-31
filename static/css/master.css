@@ -127,3 +127,33 @@ main {
     border: 0.5px solid  #7596b3;
     border-radius: 6px;
 }
+
+.accepted{
+    border: 1px solid  #227c22;
+    border-radius: 6px;
+    padding: 15px;
+}
+
+.rejected{
+    border: 1px solid  #940a05;
+    border-radius: 6px;
+    padding: 15px;
+}
+
+.pending{
+    border: 1px solid  #e78b12;
+    border-radius: 6px;
+    padding: 15px;
+}
+
+.accepted_text{
+    color: #227c22;
+}
+
+.rejected_text{
+    color: #940a05;
+}
+
+.pending_text{
+    color: #e78b12;
+}

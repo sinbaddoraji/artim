@@ -9,4 +9,5 @@ urlpatterns = [
     path('makepayment/', views.payment_page, name='payment_page'),
     path('paymentcompleted/', views.payment_completed, name='payment_completed'),
     path('paymentcancelled/', views.payment_canceled, name='payment_cancelled'),
+    path('request/<str:action><int:order>/', views.accept_or_reject_request, name='accept_or_reject'),
 ]

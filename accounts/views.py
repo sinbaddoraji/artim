@@ -11,6 +11,7 @@ from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 from .models import UserProfile
+from order.models import UserOrder
 from django.core.mail import send_mail
 
 def user_login(request):
@@ -88,16 +89,23 @@ def userlogout(request):
 
 class Dashboard(LoginRequiredMixin, TemplateView):
     template_name = 'accounts/dashboard.html'
-
+    
     def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
         queryset = UserProfile.objects.filter(artisan_approved=False).filter(blocked=False)
-        context['artisans'] = queryset
-        context['usercount'] = UserProfile.objects.count()
-        context['customercount'] = UserProfile.objects.filter(user_type="customer").count()
-        context['artisancount'] = UserProfile.objects.filter(user_type="artisan").count()
+        if self.request.user.is_staff:
+            context['artisans'] = queryset
+            context['usercount'] = UserProfile.objects.count()
+            context['customercount'] = UserProfile.objects.filter(user_type="customer").count()
+            context['artisancount'] = UserProfile.objects.filter(user_type="artisan").count()
+        else:
+            if self.request.user.userprofile.user_type == "customer":
+                context['customer_orders'] = UserOrder.objects.filter(customerorder=self.request.user.userprofile)
+            else:
+                context['artisan_orders'] = UserOrder.objects.filter(artisanorder=self.request.user.userprofile)
         return context
+
+
 
 class Success(TemplateView):
     template_name = 'accounts/registration_successful.html'

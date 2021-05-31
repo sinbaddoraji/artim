@@ -15,14 +15,14 @@ class UserOrder(models.Model):
     message = models.TextField(default=False)
     
     def completed(self):
-        self.completed = True
-        self.completed_date = timezone.now
+        self.order_completed = True
+        self.completed_date = timezone.now()
         self.save()
     
     def accepted(self):
-        self.accepted = True
+        self.order_accepted = True
         self.save()
 
     def rejected(self):
-        self.rejected = True
+        self.order_rejected = True
         self.save()
