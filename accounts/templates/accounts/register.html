@@ -24,18 +24,30 @@
 <br>
 <script>
     var services = document.getElementById("services");
+    var price = document.getElementById("price");
+    var selected;
+    var radio1 = document.getElementById("user_type_0");
+    var radio2 = document.getElementById("user_type_1");
+
+    if (radio1.checked == false && radio2.checked == false)
+    {
+        radio1.checked = true;
+    }
+   
+
     services.style.display = "none";
+    price.style.display = "none";
     function toggler() {
-        var selected;
-        var radio1 = document.getElementById("user_type_0");
-        var radio2 = document.getElementById("user_type_1");
+
         if (radio1.checked) {
             selected = radio1.value;
             services.style.display = "none";
+            price.style.display = "none";
         } else if(radio2.checked) {
             selected = radio2.value;
             services.style.display = "block";
+            price.style.display = "block";
         }
-        }
+    }
 </script>
 {% endblock body %}
