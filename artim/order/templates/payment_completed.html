@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load django_bootstrap5 %}
+{% load static %}
+
+{% block body %}
+<br>
+<br>
+<br>
+<div class="row justify-content-center">
+    <div class="col-10 col-md-8 col-lg-6 blue text-center">
+        <h1><i class="far fa-check-circle fa-3x"></i></h1>
+        <h4>Payment successful</h4>
+        <h5>Thanks for the purchase, you will be notified as soon as your order is accepted</h5>
+        <a href="{% url 'accounts:dashboard' %}"><button class="btn btn-outline-primary btn-lg">GO BACK TO MY PROFILE</button></a>
+    </div>
+</div>
+{% endblock body %}

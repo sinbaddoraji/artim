@@ -1,0 +1,111 @@
+{% extends 'base.html' %} 
+{% load django_bootstrap5 %} 
+{% load static %} 
+{% load accounts_tag %} 
+{% block title %}
+    Blocked users
+{% endblock title %}
+
+
+{% block body %}
+<div class="row">
+    <div class="col-4 text-center">
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-10">
+                {% if user.userprofile.photo %}
+                <img src="{{MEDIA_URL}}/{{user.userprofile.photo}}" class="img-fluid img-thumbnail rounded-circle" alt="{{user.first_name}}"> {% else %} {% if user.userprofile.gender == "male" or user.is_staff%}
+                <img src="{% static "images/male.jpg " %}" class="img-fluid img-thumbnail rounded-circle" alt="{{user.first_name}}"> {% else %}
+                <img src="{% static "images/female.jpg " %}" class="img-fluid img-thumbnail rounded-circle" alt="{{user.first_name}}"> {% endif %} {% endif %}
+            </div>
+            <div class="col-md-1"></div>
+        </div>
+        {% if user.is_staff %}
+            <h5><span class="badge bg-success">ADMIN</span></h5>
+        {% else %} 
+        {% if user.userprofile.user_type == "artisan" %}
+            <h5><span class="badge bg-primary">ARTISAN</span></h5>
+        {% else %}
+            <h5><span class="badge bg-info">CUSTOMER</span></h5>
+        {% endif %} 
+        {% endif %} 
+        {% if user.is_staff %}
+        <h4 class="form_text">{{user.first_name.title}} {{user.last_name.title}}</h4>
+        <i class="fas fa-user-tag form_text my-2"></i> <strong>{{user.username}}</strong><br />
+        <span class="form_text my-1"><strong>Joined:</strong></span> <strong>{{user.date_joined}}</strong><br /> {% else %} {% if user.userprofile.user_type == "artisan" %}
+        <h4 class="form_text">{{user.first_name.title}} {{user.last_name.title}}</h4>
+        <div class="card-text my-2">
+            {% for service in user.userprofile.services|splitter %}
+            <span class="badge bg-primary" style="font-size: 0.9rem;">{{service.title}}</span> {% endfor %}
+        </div>
+        <span class="form_text my-1"><strong>Joined:</strong></span> <strong>{{user.date_joined}}</strong><br />
+        <i class="fas fa-user-tag form_text my-2"></i> <strong>{{user.username}}</strong><br />
+        <i class="far fa-calendar-alt form_text my-2"></i> <strong>{{user.userprofile.age}} years old</strong><br />
+        <i class="fas fa-venus-mars form_text my-2"></i> <strong>{{user.userprofile.gender.title}}</strong><br />
+        <i class="fas fa-map-marker-alt form_text my-2"></i> <strong>{{user.userprofile.city.title}}, UK</strong>
+        <h5><i class="fas fa-pound-sign form_text my-2"></i><strong>{{user.userprofile.price}}/hr</strong></h5>
+        <div class="star my-2">
+            {% if user.userprofile.get_rating >= 1 %}
+            <i class="fas fa-star"></i> {% elif user.userprofile.get_rating >= 0.5 %}
+            <i class="fas fa-star-half-alt"></i> {% else %}
+            <i class="far fa-star"></i> {% endif %} {% if user.userprofile.get_rating >= 2 %}
+            <i class="fas fa-star"></i> {% elif user.userprofile.get_rating >= 1.5 %}
+            <i class="fas fa-star-half-alt"></i> {% else %}
+            <i class="far fa-star"></i> {% endif %} {% if user.userprofile.get_rating >= 3 %}
+            <i class="fas fa-star"></i> {% elif user.userprofile.get_rating >= 2.5 %}
+            <i class="fas fa-star-half-alt"></i> {% else %}
+            <i class="far fa-star"></i> {% endif %} {% if user.userprofile.get_rating >= 4 %}
+            <i class="fas fa-star"></i> {% elif user.userprofile.get_rating >= 3.5 %}
+            <i class="fas fa-star-half-alt"></i> {% else %}
+            <i class="far fa-star"></i> {% endif %} {% if user.userprofile.get_rating >= 5 %}
+            <i class="fas fa-star"></i> {% elif user.userprofile.get_rating >= 4.5 %}
+            <i class="fas fa-star-half-alt"></i> {% else %}
+            <i class="far fa-star"></i> {% endif %}
+        </div>
+        <strong>
+                {% if user.userprofile.get_total_reviews > 0 %}
+                    {{user.userprofile.get_total_reviews}} review{{ user.userprofile.get_total_reviews|pluralize }}
+                {% else %}
+                    You don't have reviews yet
+                {% endif %}
+                </strong> {% else %} {% endif %} {% endif %}
+    </div>
+    <div class="col-8">
+        {% if blocked_artisans.count > 0 %}
+            <h4>There are <span class="form_text">{{blocked_artisans.count}}</span> blocked users.</h4>
+            {% for artisan in blocked_artisans %}
+                <div class="card p-3 my-3">
+                    <div class="row">
+                        <h4 style="color: red;">BLOCKED</h4>
+                        <div class="col">
+                            <strong class="form_text" style="font-size: 1.3rem;">{{artisan.user.first_name.title}} {{artisan.user.last_name.title}}</strong>
+                        </div>
+                        <div class="col">
+                            <i class="fas fa-pound-sign form_text"></i><strong style="color: black;">{{artisan.price}}/hr</strong>
+                        </div>
+                        <div class="col">
+                            <i class="fas fa-map-marker-alt form_text"></i> <strong style="color: black;">{{artisan.city.title}}, UK</strong>
+                        </div>
+                    </div>
+                    <div class="card-text my-2 skills">
+                        {% for service in artisan.services|splitter %}
+                            <span class="badge bg-primary" style="font-size: 0.75rem;">{{service.title}}</span>
+                        {% endfor %}
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 d-grid gap-2">
+                            <a class="btn btn-success" href="{% url 'accounts:approve_or_block' username=artisan.user.username action="approve" %}"><strong><i class="fas fa-thumbs-up"></i> UNBLOCK AND APPROVE</strong></a>
+                        </div>
+                        <div class="col-md-6 d-grid gap-2">
+                            <a class="btn btn-warning" href="{% url 'accounts:approve_or_block' username=artisan.user.username action="unblock" %}"><strong><i class="fas fa-ban"></i> UNBLOCK</strong></a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <h4 class="text-center form_text my-6">There is no blocked user to display.</h4>
+        {% endif %}
+       
+    </div>
+</div>
+<br> {% endblock body %}
