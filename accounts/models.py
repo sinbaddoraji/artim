@@ -40,15 +40,21 @@ class UserProfile(models.Model):
         return self.artisan_review.count()
 
     def approve_artisan(self):
+        self.user.is_active = True
+        self.user.save()
         self.artisan_approved = True
         self.blocked = False
         self.save()
 
     def block_user(self):
+        self.user.is_active = False
+        self.user.save()
         self.blocked = True
         self.save()
 
     def unblock_user(self):
+        self.user.is_active = True
+        self.user.save()
         self.blocked = False
         self.save()
 
