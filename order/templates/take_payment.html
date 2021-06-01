@@ -20,15 +20,7 @@
             </div>
             <div class="col-md-1"></div>
         </div>
-        {% if user.is_staff %}
-            <h5><span class="badge bg-success">ADMIN</span></h5>
-        {% else %} 
-        {% if user.userprofile.user_type == "artisan" %}
-            <h5><span class="badge bg-primary">ARTISAN</span></h5>
-        {% else %}
-            <h5><span class="badge bg-info">CUSTOMER</span></h5>
-        {% endif %} 
-        {% endif %} 
+        <h5><span class="badge bg-primary">ARTISAN</span></h5>
         <h4 class="form_text">{{user.first_name.title}} {{user.last_name.title}}</h4>
         <span class="form_text my-1"><strong>Joined:</strong></span> <strong>{{user.date_joined}}</strong><br />
         <i class="fas fa-user-tag form_text my-2"></i> <strong>{{user.username}}</strong><br />
@@ -76,7 +68,7 @@
             <label for="floatingInput">Billing postcode</label>
         </div>
         <div class="text-center">
-            <button class="btn btn-primary my-2" onclick="pay"><strong>MAKE PAYMENT OF 	&#163;{{price}}</strong></button>
+            <button class="btn btn-primary my-2" type="submit" onclick="pay"><strong>MAKE PAYMENT OF 	&#163;{{price}}</strong></button>
         </div>
     </form>
     <div class="text-center">
@@ -107,10 +99,6 @@ function validateForm() {
     {
         document.getElementById("errorMessage").innerHTML = "Invalid card number";
         return false;
-    }
-    else
-    {
-        document.getElementById("errorMessage").innerHTML = "";
     }
 }
 
@@ -180,7 +168,7 @@ function IsValidCreditCardNumber(cardNumber) {
   else if (DiscoverCardnumber(cardNumber)) {} 
   else if (DinerClubCardnumber(cardNumber)) {} 
   else if (JCBCardnumber(cardNumber)) {}
-  return null;
+  else return null;
 
   return 'valid';
 }

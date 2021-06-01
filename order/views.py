@@ -42,7 +42,7 @@ def order_service(request, slug):
                         'error':'Please fill in the form properly.',
                         }
                     )
-        return render(request, 'order_form.html', context={'artisan':slug, 'services':services})
+        return render(request, 'order_form.html', context={'artisan':artisan, 'services':services})
     else:
         messages.error(request, f"You can't access that page, If you attempt that again you might be blocked.")
         return redirect('accounts:dashboard')
@@ -65,7 +65,8 @@ def payment_page(request):
     if request.method == "POST":
         return redirect('orders:payment_completed')
 
-    return render(request, 'take_payment.html', context={'form':form, 'price':order['price'], 'artisan':order['artisan']})
+    user = get_object_or_404(User, username=order["artisan"])
+    return render(request, 'take_payment.html', context={'form':form, 'price':order['price'], 'artisan':order['artisan'], 'user':user})
 
 
 @csrf_exempt
