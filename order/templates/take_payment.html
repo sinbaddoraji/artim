@@ -43,7 +43,7 @@
                 </div>
                 <div class="col-md-3">
                 <div class="form-floating">
-                    <input id="datefield" class="form-control" type='date' min='1899-01-01' max='2000-13-13' placeholder="MMYY" ></input>
+                    <input id="datefield" type="month" class="form-control" type='date' min='1899-01' max='2040-12' placeholder="MMYY" oninput="dateInput()" required></input>
                     <label for="floatingSelectGrid">Exp Date (MMYY)</label>
                 </div>
                 </div>
@@ -74,30 +74,34 @@
     <div class="text-center">
         {{ form.render }}
     </div>
-    <P id = "errorMessage" style="color: red;"></P>
 </div>
 <br>
 <script>
 var today = new Date();
-var dd = today.getDate();
 var mm = today.getMonth()+1; //January is 0!
 var yyyy = today.getFullYear();
-if(dd<10){
-    dd='0'+dd
-} 
-if(mm<10){
-    mm='0'+mm
-} 
+if(mm<10){ mm='0'+mm } 
+today = yyyy+'-'+mm;
 
-today = yyyy+'-'+mm+'-'+dd;
-document.getElementById("datefield").setAttribute("min", today);
+
+function dateInput()
+{
+    //Function to validate date input
+    var dtV = document.getElementById("datefield").value;
+    var dtvY = parseInt(dtV.toString().split("-")[0]);
+    if(dtV < today && dtvY > 1000)
+    {
+        alert('Invalid Date!');
+        document.getElementById("datefield").value = '';
+    }
+}
 
 function validateForm() {
     cValue = document.getElementById('ccNum').value;
     var cardType = IsValidCreditCardNumber(cValue);
     if(cardType == null)
     {
-        document.getElementById("errorMessage").innerHTML = "Invalid card number";
+        alert('Invalid card number!');
         return false;
     }
 }
@@ -130,34 +134,34 @@ function cardPlaceHolder()
     document.getElementById('ccNum').placeholder = t;
 }
 
-function AmexCardnumber(inputtxt) {
+function AmexCardnumber(input_text) {
   var card_number = /^(?:3[47][0-9]{13})$/;
-  return card_number.test(inputtxt);
+  return card_number.test(input_text);
 }
 
-function VisaCardnumber(inputtxt) {
+function VisaCardnumber(input_text) {
   var card_number = /^(?:4[0-9]{12}(?:[0-9]{3})?)$/;
-  return card_number.test(inputtxt);
+  return card_number.test(input_text);
 }
 
-function MasterCardnumber(inputtxt) {
+function MasterCardnumber(input_text) {
   var card_number = /^(?:5[1-5][0-9]{14})$/;
-  return card_number.test(inputtxt);
+  return card_number.test(input_text);
 }
 
-function DiscoverCardnumber(inputtxt) {
+function DiscoverCardnumber(input_text) {
   var card_number = /^(?:6(?:011|5[0-9][0-9])[0-9]{12})$/;
-  return card_number.test(inputtxt);
+  return card_number.test(input_text);
 }
 
-function DinerClubCardnumber(inputtxt) {
+function DinerClubCardnumber(input_text) {
   var card_number = /^(?:3(?:0[0-5]|[68][0-9])[0-9]{11})$/;
-  return card_number.test(inputtxt);
+  return card_number.test(input_text);
 }
 
-function JCBCardnumber(inputtxt) {
+function JCBCardnumber(input_text) {
   var card_number = /^(?:(?:2131|1800|35\d{3})\d{11})$/;
-  return card_number.test(inputtxt);
+  return card_number.test(input_text);
 }
 
 function IsValidCreditCardNumber(cardNumber) {
