@@ -108,7 +108,7 @@ DATABASES = {
         'NAME': '7047cem',
         'ENGINE': 'django.db.backends.mysql',
         'USER': 'root',
-        'PASSWORD': '',
+        'PASSWORD': 'Jesse2019',
         'OPTIONS': {
           'autocommit': True,
         },

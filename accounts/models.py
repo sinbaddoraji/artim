@@ -56,7 +56,7 @@ class UserProfile(models.Model):
 class Review(models.Model):
     artisan_review = models.ForeignKey(UserProfile, related_name='artisan_review', on_delete=models.CASCADE)
     customer_review = models.ForeignKey(UserProfile, related_name='customer_review', on_delete=models.CASCADE)
-    rating = models.DecimalField(default=0.0, decimal_places=2, max_digits=10)
+    rating = models.DecimalField(decimal_places=2, max_digits=10)
     comment = models.TextField()
     review_date = models.DateTimeField(default=timezone.now)
 

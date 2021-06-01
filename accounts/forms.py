@@ -119,7 +119,7 @@ class UserProfileForm(forms.ModelForm):
     photo = forms.ImageField(label='Profile picture', required=False)
     services = forms.MultipleChoiceField(label='', required=False, choices=SKILLS, help_text='', widget=forms.SelectMultiple(attrs={'id':'services'}))
     phone_number = forms.CharField()
-    price = forms.DecimalField(label='Price per hour', widget=forms.TextInput(attrs={'id':'price','value':'0'}))
+    price = forms.DecimalField(label='Price per hour', widget=forms.TextInput(attrs={'id':'price'}))
 
     class Meta:
         model = UserProfile

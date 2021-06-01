@@ -32,7 +32,7 @@
     <div class="col-8 form_text">
         <form method="post">
             {% csrf_token %}
-            <h5 class="text-center">Fill in the form below to order {{artisan.upper}}'s services</h5>
+            <h5 class="text-center">Fill in the form below to order {{artisan.first_name.upper}}'s services</h5>
             {% if error %}
                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
                     {{error}}

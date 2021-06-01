@@ -48,28 +48,33 @@ def order_service(request, slug):
         return redirect('accounts:dashboard')
 
 
+@login_required
 def payment_page(request):
-    order = request.session['order']
-    host = request.get_host()
-    paypal_dict = {
-        'business': settings.PAYPAL_RECEIVER_EMAIL,
-        'amount': order["price"],
-        'item_name': f'Service from {order["artisan"]}',
-        'invoice': get_random_string(length=10),
-        'currency_code': 'GBP',
-        'notify_url': f"http://{host}{reverse('orders:paypal-ipn')}",
-        'return_url': f"http://{host}{reverse('orders:payment_completed')}",
-        'cancel_return': f"http://{host}{reverse('orders:payment_cancelled')}",
-    }
-    form = PayPalPaymentsForm(initial=paypal_dict)
-    if request.method == "POST":
-        return redirect('orders:payment_completed')
+    try:
+        order = request.session['order']
+        host = request.get_host()
+        paypal_dict = {
+            'business': settings.PAYPAL_RECEIVER_EMAIL,
+            'amount': order["price"],
+            'item_name': f'Service from {order["artisan"]}',
+            'invoice': get_random_string(length=10),
+            'currency_code': 'GBP',
+            'notify_url': f"http://{host}{reverse('orders:paypal-ipn')}",
+            'return_url': f"http://{host}{reverse('orders:payment_completed')}",
+            'cancel_return': f"http://{host}{reverse('orders:payment_cancelled')}",
+        }
+        form = PayPalPaymentsForm(initial=paypal_dict)
+        if request.method == "POST":
+            return redirect('orders:payment_completed')
 
-    user = get_object_or_404(User, username=order["artisan"])
+        user = get_object_or_404(User, username=order["artisan"])
+    except KeyError:
+        return redirect('accounts:dashboard')
     return render(request, 'take_payment.html', context={'form':form, 'price':order['price'], 'artisan':order['artisan'], 'user':user})
 
 
 @csrf_exempt
+@login_required
 def payment_completed(request):
     try:
         order = request.session["order"]
@@ -97,6 +102,7 @@ def payment_canceled(request):
     return render(request, 'payment_canceled.html')
 
 
+@login_required
 def accept_or_reject_request(request, order, action):
     if action == "completed":
         if request.user.userprofile.user_type == "customer":

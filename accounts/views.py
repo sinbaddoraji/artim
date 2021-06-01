@@ -13,6 +13,7 @@ from django.contrib import messages
 from .models import UserProfile
 from order.models import UserOrder
 from django.core.mail import send_mail
+from django.contrib.auth import update_session_auth_hash
 
 def user_login(request):
     if request.user.is_authenticated:
@@ -107,6 +108,7 @@ class Dashboard(LoginRequiredMixin, TemplateView):
 
 
 
+
 class Success(TemplateView):
     template_name = 'accounts/registration_successful.html'
 
@@ -179,10 +181,11 @@ def approve_or_block_user_view(request, username, action):
             return redirect('accounts:dashboard')
         else:
             user.block_user()
+            update_session_auth_hash(request, user.user)
             messages.success(request, f'You have successfully blocked {username}')
             return redirect('accounts:dashboard')
     else:
-        messages.danger(request, 'That was terrible of you. You will be blocked next time you try such.')
+        messages.error(request, 'That was terrible of you. You will be blocked next time you try such.')
         return redirect('accounts:dashboard')
     
 
