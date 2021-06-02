@@ -13,7 +13,6 @@ from django.contrib import messages
 from .models import UserProfile
 from order.models import UserOrder
 from django.core.mail import send_mail
-from django.contrib.auth import update_session_auth_hash
 
 def user_login(request):
     if request.user.is_authenticated:
@@ -71,11 +70,12 @@ def user_register(request):
             user.save()
             user_profile.save()
 
-            # send_mail(
-            #     'Welcome to ARTIM',
-            #     f'Hi {first_name}, thanks for registering on ARTIM, we hope you enjoy using the website.'
-            #     [email],
-            # )
+            send_mail(
+                'Welcome to ARTIM',
+                f'Hi {first_name}, thanks for registering on ARTIM, we hope you enjoy using the website.',
+                'ARTIM <noreply@yankeytechnologies.topeyankey.com>',
+                [email],
+            )
             return redirect('accounts:success', info=form.cleaned_data.get('first_name'))
 
 
@@ -106,7 +106,12 @@ class Dashboard(LoginRequiredMixin, TemplateView):
                 context['artisan_orders'] = UserOrder.objects.filter(artisanorder=self.request.user.userprofile)
         return context
 
-
+    def test_func(self):
+        if self.request.user.is_staff:
+            return self.request.user.is_staff
+        else:
+            if self.request.user.userprofile.blocked:
+                return redirect('accounts:logout')
 
 
 class Success(TemplateView):
@@ -181,11 +186,10 @@ def approve_or_block_user_view(request, username, action):
             return redirect('accounts:dashboard')
         else:
             user.block_user()
-            update_session_auth_hash(request, user.user)
             messages.success(request, f'You have successfully blocked {username}')
             return redirect('accounts:dashboard')
     else:
-        messages.error(request, 'That was terrible of you. You will be blocked next time you try such.')
+        messages.danger(request, 'That was terrible of you. You will be blocked next time you try such.')
         return redirect('accounts:dashboard')
     
 

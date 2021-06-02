@@ -42,39 +42,33 @@ def order_service(request, slug):
                         'error':'Please fill in the form properly.',
                         }
                     )
-        return render(request, 'order_form.html', context={'artisan':artisan, 'services':services})
+        return render(request, 'order_form.html', context={'artisan':slug, 'services':services})
     else:
         messages.error(request, f"You can't access that page, If you attempt that again you might be blocked.")
         return redirect('accounts:dashboard')
 
 
-@login_required
 def payment_page(request):
-    try:
-        order = request.session['order']
-        host = request.get_host()
-        paypal_dict = {
-            'business': settings.PAYPAL_RECEIVER_EMAIL,
-            'amount': order["price"],
-            'item_name': f'Service from {order["artisan"]}',
-            'invoice': get_random_string(length=10),
-            'currency_code': 'GBP',
-            'notify_url': f"http://{host}{reverse('orders:paypal-ipn')}",
-            'return_url': f"http://{host}{reverse('orders:payment_completed')}",
-            'cancel_return': f"http://{host}{reverse('orders:payment_cancelled')}",
-        }
-        form = PayPalPaymentsForm(initial=paypal_dict)
-        if request.method == "POST":
-            return redirect('orders:payment_completed')
+    order = request.session['order']
+    host = request.get_host()
+    paypal_dict = {
+        'business': settings.PAYPAL_RECEIVER_EMAIL,
+        'amount': order["price"],
+        'item_name': f'Service from {order["artisan"]}',
+        'invoice': get_random_string(length=10),
+        'currency_code': 'GBP',
+        'notify_url': f"http://{host}{reverse('orders:paypal-ipn')}",
+        'return_url': f"http://{host}{reverse('orders:payment_completed')}",
+        'cancel_return': f"http://{host}{reverse('orders:payment_cancelled')}",
+    }
+    form = PayPalPaymentsForm(initial=paypal_dict)
+    if request.method == "POST":
+        return redirect('orders:payment_completed')
 
-        user = get_object_or_404(User, username=order["artisan"])
-    except KeyError:
-        return redirect('accounts:dashboard')
-    return render(request, 'take_payment.html', context={'form':form, 'price':order['price'], 'artisan':order['artisan'], 'user':user})
+    return render(request, 'take_payment.html', context={'form':form, 'price':order['price'], 'artisan':order['artisan']})
 
 
 @csrf_exempt
-@login_required
 def payment_completed(request):
     try:
         order = request.session["order"]
@@ -102,7 +96,6 @@ def payment_canceled(request):
     return render(request, 'payment_canceled.html')
 
 
-@login_required
 def accept_or_reject_request(request, order, action):
     if action == "completed":
         if request.user.userprofile.user_type == "customer":
@@ -110,7 +103,8 @@ def accept_or_reject_request(request, order, action):
             order.completed()
             send_mail(
                     f'Your service rendered has been marked as completed',
-                    f"Hi {order.artisanorder.user.first_name}, {order.customerorder.user.first_name} has marked your service as completed and your funds have been deposited to your account. Thanks working with ARTIM"
+                    f"Hi {order.artisanorder.user.first_name}, {order.customerorder.user.first_name} has marked your service as completed and your funds have been deposited to your account. Thanks working with ARTIM",
+                    'ARTIM <noreply@yankeytechnologies.topeyankey.com>',
                     [order.artisanorder.user.email],
                 )
             messages.success(request, f"Order has been marked as completed. Thanks for using ARTIM")
@@ -125,7 +119,8 @@ def accept_or_reject_request(request, order, action):
                 order.accepted()
                 send_mail(
                     f'Your order request for {order.artisanorder.service} has been accepted',
-                    f"Hi {order.customerorder.user.first_name}, you request for {order.artisanorder.user.first_name}'s service on ARTIM. We are sending this email to inform you that your request has been accepted"
+                    f"Hi {order.customerorder.user.first_name}, you request for {order.artisanorder.user.first_name}'s service on ARTIM. We are sending this email to inform you that your request has been accepted",
+                    'ARTIM <noreply@yankeytechnologies.topeyankey.com>',
                     [order.customerorder.user.email],
                 )
                 messages.success(request, f"Request has been accepted, please contact the Customer with the information shown.")
@@ -135,7 +130,8 @@ def accept_or_reject_request(request, order, action):
                 order.rejected()
                 send_mail(
                     f'Your order request for {order.artisanorder.service} has been rejected',
-                    f"Hi {order.customerorder.user.first_name}, we are sorry to let you know that {order.artisanorder.user.first_name} has rejected your request for {order.service}. Please check out another artisan"
+                    f"Hi {order.customerorder.user.first_name}, we are sorry to let you know that {order.artisanorder.user.first_name} has rejected your request for {order.service}. Please check out another artisan",
+                    'ARTIM <noreply@yankeytechnologies.topeyankey.com>',
                     [order.customerorder.user.email],
                 )
                 messages.error(request, f"Request has been rejected.")
