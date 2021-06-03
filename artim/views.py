@@ -11,10 +11,14 @@ from django.contrib import messages
 
 
 def redirect_to_home(request):
-    return redirect('/home/')
+    return redirect('home/homepage/')
 
 
-class HomePage(ListView):
+def homepage(request):
+    return render(request, 'Homepage.html')
+    
+
+class ArtisanPage(ListView):
     context_object_name = 'artisans'
     template_name = 'index.html'
     slug = "home"

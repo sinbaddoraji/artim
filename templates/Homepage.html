@@ -1,0 +1,84 @@
+
+{% extends 'base.html' %}
+{% load static %}
+{% load accounts_tag %}
+
+{% block title %}Home{% endblock title %}
+
+{% block body %}
+
+<div style="margin-left: 8%; margin-right: 1%; margin-bottom: 50px; margin-top: 60px">
+  <div style="align-self: right; width:500px; float: left;">
+    <h1 style="color: blue; font-size:500%">Artim</h1>
+    <h3 style="font-size:160%">Meet the artisans you need something.</h3>
+    <br>
+    <h5 style="font-size: 100%;">
+      fnjrnfrnr Descrgiuiption fruruojrf fufnujne efijfeoje <br>
+      djnefnkr efjrom efjjnt rfunrufnt frojfrijrm fejnrr;<br>
+      mrf fintint tjntn jdn frhjnf rhbghjrkbgrkh kfjrnk.<br>
+    </h5>
+
+    <br>
+    <div style="margin-left: -1%">
+      <a href="../../all" class="btn btn-primary"><strong>View Artisans</strong></a>
+      <a href="{% url 'accounts:register' %}" class="btn btn-primary"><strong>Become an Artisan</strong></a>
+    </div>
+
+    <br>
+
+    <p>Have an Account? <a href="{% url 'accounts:login' %}">Sign In</a> No? <a href="{% url 'accounts:register' %}">Register</a></p>
+    <p></p>
+  </div>
+
+  <!--Slide Show-->
+  <button style="margin-top: 140px; height: 100px; background-color: transparent;" onclick="plusDivs(-1)">&#10094;</button>
+  <button style="float: right; margin-top: 140px; margin-left: 15px; height: 100px; background-color: transparent; " onclick="plusDivs(+1)">&#10095;</button>
+
+  <div style="float: right; height: 400px; width: 600px;">
+    <img class="slide" src="{% static "/images/Slideshow/0.png" %}" style="width: 600px; height: 400px;">
+    <img class="slide" src="{% static "/images/Slideshow/1.png" %}" style="width: 600px; height: 400px;">
+    <img class="slide" src="{% static "/images/Slideshow/2.png" %}" style="width: 600px; height: 400px;">
+    <img class="slide" src="{% static "/images/Slideshow/3.png" %}" style="width: 600px; height: 400px;">
+  </div>
+
+  
+
+
+  <!-- Picture for http://www.artisansdangkor.com/-->
+  
+</div>
+<br />
+
+<script>
+
+var slideIndex = 1;
+showDivs(slideIndex);
+
+function plusDivs(n) {
+  showDivs(slideIndex += n);
+}
+
+function showDivs(n) {
+  var i;
+  var x = document.getElementsByClassName("slide");
+  if (n > x.length) {slideIndex = 1}
+  if (n < 1) {slideIndex = x.length} ;
+  for (i = 0; i < x.length; i++) {
+    x[i].style.display = "none";
+  }
+  x[slideIndex-1].style.display = "block";
+}
+</script>
+
+<style>
+  button {
+  /* Same as before */
+  transition: background-position 275ms ease;
+  }
+  button:hover {
+    background-position: 0 100%;
+  }
+</style>
+
+
+{% endblock body %}

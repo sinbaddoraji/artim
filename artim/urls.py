@@ -2,8 +2,9 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from .views import HomePage, redirect_to_home, UserDetailView, goodbye
+from .views import redirect_to_home, UserDetailView, goodbye
 from django.contrib.auth import views as auth_views
+from artim.views import ArtisanPage, homepage
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -32,7 +33,8 @@ urlpatterns = [
         name='password_reset_complete'
     ),
     path('', redirect_to_home),
-    path('<slug>/', HomePage.as_view(), name='index'),
+    path('<slug>/', ArtisanPage.as_view(), name='index'),
+    path('home/homepage/', homepage, name='homepage'),
     path('account/', include('accounts.urls')),
     path('order/', include('order.urls')),
     path('profile/<str:user_type>/<slug:slug>/', UserDetailView.as_view(), name='user-detail'),
