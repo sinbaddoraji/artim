@@ -1,93 +1,212 @@
-
-{% extends 'base.html' %}
+<!DOCTYPE html>
 {% load static %}
-{% load accounts_tag %}
+<html lang="en">
 
-{% block title %}Home{% endblock title %}
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <link rel="stylesheet" href="{% static "/css/master.css" %}">
+    <title>
+        {% block title %}
 
-{% block body %}
+        {% endblock title %}
+    </title>
+</head>
 
-<div style=" margin-bottom: 50px; margin-top: 60px;">
-  <div style="width:50%; float: left;">
-    <h1 style="color: blue; font-size:500%">Artim</h1>
-    <h3 style="font-size:160%">Meet the artisans you need something.</h3>
-    <br>
-    <h5 style="font-size: 100%; overflow-wrap:break-word; width:auto">
-      Artim provides our numerous customers and skilled personnels 
-      the perfect platform to interact. We provide prompt services in various 
-      capacities which ultimately give our customers 
-      the best customer experience with total satisfaction.
-    </h5>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg sticky-top navbar-light" style="background-color: transparent">
+            <div class="container">
+                <a class="navbar-brand" href="{% url 'homepage' %}"><strong><span class="blue">ARTIM<span></strong></a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="{% url 'index' "home" %}"><strong><span class="blue">Browse
+                                        Artisans</span></strong></a>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav mb-2 mb-lg-0">
 
-    <br>
-    <div style="margin-left: -1%">
-      <a href="../../all" class="btn btn-primary"><strong>View Artisans</strong></a>
-      <a href="{% url 'accounts:register' %}" class="btn btn-primary"><strong>Become an Artisan</strong></a>
-    </div>
+                        {% if user.is_authenticated %}
+                        <div class="nav-item dropdown drop form_text">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                <i class="fas fa-user-circle fa-1x form_text"></i><span class="form_text" style="font-size: 1.2rem;"> {{user.first_name.title}} {% if user.is_staff %}
+                                <span class="badge bg-success">Admin</span>
+                                {% else %}
+                                {% if user.userprofile.user_type == "artisan" %}
+                                <span class="badge bg-primary">Artisan</span>
+                                {% else %}
+                                <span class="badge bg-info">Customer</span>
+                                {% endif %}
+                                {% endif %}</span>
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item" href="{% url 'accounts:dashboard' %}"><i class="fas fa-id-card"></i> Your Dashboard</a>
+                                </li>
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                {% if user.is_staff %}
+                                <li><a class="dropdown-item" href="{% url 'accounts:manage_artisans' %}"><i class="fas fa-users-cog"></i> Manage Artisans</a></li>
+                                <li><a class="dropdown-item" href="{% url 'accounts:manage_customers' %}"><i class="fas fa-users"></i> Manage Customers</a></li>
+                                <li><a class="dropdown-item" href="{% url 'accounts:blocked_users' %}"><i class="fas fa-ban"></i> Blocked Users</a></li>
+                                <li><a class="dropdown-item" href="{% url 'accounts:changepassword' %}"><i class="fas fa-cogs"></i> Change
+                                        Password</a></li>
+                                {% else %}
+                                <li><a class="dropdown-item" href="{% url 'accounts:updateprofile' slug=user.userprofile.slug %}"><i
+                                            class="fas fa-sliders-h"></i> Edit Profile</a></li>
+                                {% if user.userprofile.bank_details%}
+                                <li><a class="dropdown-item" href="#"><i class="fas fa-university"></i> Edit Bank details</a></li>
+                                {% endif %}
+                                <li><a class="dropdown-item" href="{% url 'accounts:changepassword' %}"><i class="fas fa-cogs"></i> Change
+                                        Password</a></li>
+                                <li><a class="dropdown-item" href="{% url 'accounts:deleteaccount' slug=user.userprofile.slug %}"><i class="fas fa-trash"></i> Delete My Account</a></li>
+                                {% endif %}   
+                            </ul>
+                        </div>
+                        <li class="nav-item">
+                            <a class="nav-link" aria-current="page" href="{% url 'accounts:logout' %}">
+                                <button class="btn btn-outline-primary"><strong><i class="fas fa-power-off"></i> Sign Out</strong></button>
+                            </a>
+                        </li>
+                        {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" aria-current="page" href="{% url 'accounts:login' %}">
+                                <button class="btn btn-outline-primary"><strong>Sign In</strong></button>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" aria-current="page" href="{% url 'accounts:register' %}">
+                                <button class="btn btn-outline-primary"><strong>Register</strong></button>
+                            </a>
+                        </li>
+                        {% endif %}
 
-    <br>
-
-    <p>Have an Account? <a href="{% url 'accounts:login' %}">Sign In</a> No? <a href="{% url 'accounts:register' %}">Register</a></p>
-    <p></p>
-  </div>
-
-  <!--Slide Show-->
-
-<div style = "float: right; width: 50%;">
-  <div style="height: auto; width: auto;">
-    <img class="slide" src="{% static "/images/Slideshow/0.png" %}" style="width: 600px; height: 400px;">
-    <img class="slide" src="{% static "/images/Slideshow/1.png" %}" style="width: 600px; height: 400px;">
-    <img class="slide" src="{% static "/images/Slideshow/2.png" %}" style="width: 600px; height: 400px;">
-    <img class="slide" src="{% static "/images/Slideshow/3.png" %}" style="width: 600px; height: 400px;">
-  </div>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <main>
+      
 
 
-  </div>
 
 
-  <!-- Picture for http://www.artisansdangkor.com/-->
+      <div class="child" style="margin-top:100px;margin-left:230px;width: 1000px; height: 500px; position: absolute;  background-color: rgba(255, 255, 255, 0.822);">
+        <br><br>
+        <div style="margin-left: 40px; width: 60%;">
+          <h1 style="color: blue; font-size:500%">Artim</h1>
+          <h3 style="font-size:160%">Meet the artisans you need.</h3>
+          <br>
+          <h5 style="font-size: 100%; overflow-wrap:break-word; width:auto">
+            Artim provides our numerous customers and skilled personnels 
+            the perfect platform to interact. We provide prompt services in various 
+            capacities which ultimately give our customers 
+            the best customer experience with total satisfaction.
+          </h5>
   
-</div>
-<br />
+          <br><br>
+          <form action="/action_page.php">
+            <input size="50" type="text" placeholder="Try Typing 'Plumber'..." name="search">
+            <button class="btn btn-primary" type="submit"><strong>Search</strong></button>
+          </form>
+          
+          <br>
+          <div>
+            <p>
+              Popular: &nbsp;&nbsp;
+              <a href="{% url 'index' "plumber" %}">Plumber</a>&nbsp;&nbsp;
+              <a href="{% url 'index' "painter" %}">Painter</a>&nbsp;&nbsp;
+              <a href="{% url 'index' "electrician" %}">Electrician</a>&nbsp;&nbsp;
+              <a href="{% url 'index' "butcher" %}">Butcher</a>&nbsp;&nbsp;
+              <a href="{% url 'index' "tatcher" %}">Tatcher</a>
+            </p>
+          </div>
+        </div>
+        
+        <br>
+        <p></p>
+      </div>
+
+      <div style="width: auto; height: auto;">
+        <img class="slide" src="{% static "/images/Slideshow/1.jpg" %}" style="width: 100%; height: 40%;">
+        <img class="slide" src="{% static "/images/Slideshow/2.jpg" %}" style="width: 100%; height: 40%;">
+        <img class="slide" src="{% static "/images/Slideshow/3.jpg" %}" style="width: 100%; height: 40%;">
+        <img class="slide" src="{% static "/images/Slideshow/4.jpg" %}" style="width: 100%; height: 40%;">
+        <img class="slide" src="{% static "/images/Slideshow/5.jpg" %}" style="width: 100%; height: 40%;">
+        <img class="slide" src="{% static "/images/Slideshow/6.jpg" %}" style="width: 100%; height: 40%;">
+        <img class="slide" src="{% static "/images/Slideshow/7.jpg" %}" style="width: 100%; height: 40%;">
+        <img class="slide" src="{% static "/images/Slideshow/8.jpg" %}" style="width: 100%; height: 40%;">
+        <img class="slide" src="{% static "/images/Slideshow/9.jpg" %}" style="width: 100%; height: 40%;">
+      </div>
+
+      
+    </main>
+    <footer class="mu-3 mb-1">
+        <div class="container text-center blue">
+            <strong>Copyright &copy; Artim</strong><br />
+            <strong>Developed for 7047CEM by Group 1</strong>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous">
+    </script>
+
+</body>
 
 <script>
 
-var slideIndex = 1;
-showDivs(slideIndex);
+  var slideIndex = 1;
+  showDivs(slideIndex);
 
-var slide_rate = 5 * 1000; //2 seconds
-setTimeout(Slide, slide_rate);
-
-function Slide() {
-  plusDivs(+1);
+  var slide_rate = 5 * 1000; //2 seconds
   setTimeout(Slide, slide_rate);
-}
 
-function plusDivs(n) {
-  showDivs(slideIndex += n);
-}
-
-function showDivs(n) {
-  var i;
-  var x = document.getElementsByClassName("slide");
-  if (n > x.length) {slideIndex = 1}
-  if (n < 1) {slideIndex = x.length} ;
-  for (i = 0; i < x.length; i++) {
-    x[i].style.display = "none";
+  function Slide() {
+    plusDivs(+1);
+    setTimeout(Slide, slide_rate);
   }
-  x[slideIndex-1].style.display = "block";
-}
-</script>
 
-<style>
-  button {
-  /* Same as before */
-  transition: background-position 275ms ease;
+  function plusDivs(n) {
+    showDivs(slideIndex += n);
   }
-  button:hover {
-    background-position: 0 100%;
+
+  function showDivs(n) {
+    var i;
+    var x = document.getElementsByClassName("slide");
+    if (n > x.length) {slideIndex = 1}
+    if (n < 1) {slideIndex = x.length} ;
+    for (i = 0; i < x.length; i++) {
+      x[i].style.display = "none";
+    }
+    x[slideIndex-1].style.display = "block";
   }
-</style>
+  </script>
 
+  <style>
+    button {
+    /* Same as before */
+    transition: background-position 275ms ease;
+    }
+    button:hover {
+      background-position: 0 100%;
+    }
+    .child {
+      margin: 0 auto;
+    }
+    
 
-{% endblock body %}
+  </style>
+
+</html>
