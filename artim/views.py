@@ -9,16 +9,10 @@ from accounts.forms import SKILLS
 from .forms import ReviewForm
 from django.contrib import messages
 
-
-def redirect_to_home(request):
-    return redirect('home/homepage/')
-
-
 def homepage(request):
-    return render(request, 'Homepage.html')
-    
+    return render(request, 'homepage.html')
 
-class ArtisanPage(ListView):
+class ArtisanListView(ListView):
     context_object_name = 'artisans'
     template_name = 'index.html'
     slug = "home"
