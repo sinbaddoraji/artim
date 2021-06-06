@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.models import User
 from .forms import UserLoginForm, UserForm, UserProfileForm
+from allauth.socialaccount.models import SocialAccount
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.views.generic import TemplateView, UpdateView, DeleteView, RedirectView, ListView, CreateView
@@ -13,6 +14,7 @@ from django.contrib import messages
 from .models import UserProfile
 from order.models import UserOrder
 from django.core.mail import send_mail
+
 
 def user_login(request):
     if request.user.is_authenticated:
@@ -85,7 +87,7 @@ def user_register(request):
 @login_required
 def userlogout(request):
     logout(request)
-    return redirect('/home/')
+    return redirect('/')
 
 
 class Dashboard(LoginRequiredMixin, TemplateView):
@@ -109,9 +111,42 @@ class Dashboard(LoginRequiredMixin, TemplateView):
     def test_func(self):
         if self.request.user.is_staff:
             return self.request.user.is_staff
-        else:
-            if self.request.user.userprofile.blocked:
-                return redirect('accounts:logout')
+
+
+class SocialDashboard(LoginRequiredMixin, TemplateView):
+    template_name = 'accounts/social_dashboard.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        queryset = SocialAccount.objects.get(user=self.request.user)
+        context['image'] = queryset.get_avatar_url()
+        return context
+
+    def get(self, request, *args, **kwargs):
+        try:
+            self.request.user.userprofile
+            return redirect('accounts:dashboard')
+        except UserProfile.DoesNotExist:
+            pass
+        return super().get(request, *args, **kwargs)
+
+
+class CompleteProfile(LoginRequiredMixin, CreateView):
+    model = UserProfile
+    form_class = UserProfileForm
+    template_name = "accounts/social_complete_profile.html"
+    success_url = reverse_lazy('accounts:dashboard')
+    success_message = "Thank you for completing your profile. You can now enjoy Artim"
+
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        queryset = SocialAccount.objects.get(user=self.request.user)
+        context['image'] = queryset.get_avatar_url()
+        return context
 
 
 class Success(TemplateView):

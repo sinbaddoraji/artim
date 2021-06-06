@@ -4,7 +4,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 from .views import UserDetailView, goodbye
 from django.contrib.auth import views as auth_views
-from artim.views import ArtisanListView, homepage
+from .views import ArtisanListView, homepage
+from accounts.views import SocialDashboard
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -38,5 +39,6 @@ urlpatterns = [
     path('order/', include('order.urls')),
     path('profile/<str:user_type>/<slug:slug>/', UserDetailView.as_view(), name='user-detail'),
     path('user/goodbye/', goodbye, name='goodbye'),
+    path('accounts/profile/', SocialDashboard.as_view(), name='social_dashboard'),
     path('external/', include('allauth.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

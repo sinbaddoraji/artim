@@ -23,6 +23,12 @@
                 <button class="btn btn-primary" type="submit"><strong>SIGN IN</strong></button>
             </div>
         </form>
+        <div class="d-grid gap-2 mt-2">
+            <a class="btn btn-outline-dark" href="/external/google/login/?process=login" role="button" style="text-transform:none">
+                <img width="20px" style="margin-bottom:3px; margin-right:5px" alt="Google sign-in" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" />
+                <strong>Sign in with Google</strong>
+              </a>
+        </div>
         <p><em>Don't have an account yet?</em> <a href="{% url 'accounts:register' %}" style="text-decoration: none;">
 
                 <span class="links"><Strong>REGISTER</Strong></span>

@@ -60,8 +60,6 @@ INSTALLED_APPS = [
 
 SITE_ID = 1
 
-LOGIN_REDIRECT_URL = 'accounts:dashboard'
-
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'SCOPE': [
