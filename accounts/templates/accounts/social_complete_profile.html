@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load django_bootstrap5 %}
+{% load static %}
+{% load accounts_tag %}
+{% block title %}
+    Your Dashboard
+{% endblock title %}
+
+{% block body %}
+<div class="row">
+    <div class="col-4 text-center">
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-10">
+                <img src="{{image}}" class="img-fluid img-thumbnail rounded-circle"
+                    alt="{{user.first_name}}" width="300" height="300">
+            </div>
+            <div class="col-md-1"></div>
+        </div>
+        <h4 class="form_text">{{user.first_name.title}} {{user.last_name.title}}</h4>
+        <span class="form_text my-1"><strong>Joined:</strong></span> <strong>{{user.date_joined}}</strong><br />
+        <i class="fas fa-user-tag form_text my-2"></i> <strong>{{user.username}}</strong><br />
+    </div>
+    <div class="col-8 form_text">
+        <form action="" method="post">
+            {% csrf_token %}
+            {% bootstrap_form form layout="floating" %}
+            <div class="d-grid gap-2">
+                <button class="btn btn-primary" type="submit"><strong>SUBMIT PROFILE</strong></button>
+            </div>
+        </form>
+    </div>
+</div>
+<br>
+<script>
+    var services = document.getElementById("services");
+    var price = document.getElementById("id_price");
+    var radio1 = document.getElementById("user_type_0");
+    var radio2 = document.getElementById("user_type_1");
+
+    if (radio1.checked == false & radio2.checked == false)
+    {
+        services.style.display = "none";
+        price.style.display = "none";
+    }
+
+    function toggler() {
+        if (radio1.checked) {
+            selected = radio1.value;
+            services.style.display = "none";
+            price.style.display = "none";
+            services.removeAttribute("required")
+            price.removeAttribute("required")
+        } else if(radio2.checked) {
+            selected = radio2.value;
+            services.style.display = "block";
+            price.style.display = "block";
+            services.setAttribute("required", "true")
+            price.setAttribute("required", "true")
+        }
+    }
+</script>
+{% endblock body %}

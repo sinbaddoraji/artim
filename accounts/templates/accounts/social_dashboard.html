@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load django_bootstrap5 %}
+{% load static %}
+{% load accounts_tag %}
+{% block title %}
+    Your Dashboard
+{% endblock title %}
+
+{% block body %}
+<div class="row">
+    <div class="col-4 text-center">
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-10">
+                <img src="{{image}}" class="img-fluid img-thumbnail rounded-circle"
+                    alt="{{user.first_name}}" width="300" height="300">
+            </div>
+            <div class="col-md-1"></div>
+        </div>
+        <h4 class="form_text">{{user.first_name.title}} {{user.last_name.title}}</h4>
+        <span class="form_text my-1"><strong>Joined:</strong></span> <strong>{{user.date_joined}}</strong><br />
+        <i class="fas fa-user-tag form_text my-2"></i> <strong>{{user.username}}</strong><br />
+    </div>
+    <div class="col-8">
+        <div class="alert alert-warning text-center" role="alert">
+            <span class="mb-5"><strong>Completing your profile will give you full access to the site.</strong></span> <br />
+            <a href="{% url 'accounts:social_complete_profile' %}"><button class="btn btn-warning"><strong>COMPLETE PROFILE</strong></button></a>
+        </div>
+    </div>
+</div>
+<br>
+{% endblock body %}
