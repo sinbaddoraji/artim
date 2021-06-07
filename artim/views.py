@@ -8,14 +8,27 @@ from django.views.generic.edit import FormMixin
 from accounts.forms import SKILLS
 from .forms import ReviewForm
 from django.contrib import messages
+import random, difflib
 
 def homepage(request):
-    return render(request, 'homepage.html')
+    jobs = []
+    for job in SKILLS:
+        jobs.append(job[1])
+    if request.method == "POST":
+        searched = request.POST.get("search")
+        response = difflib.get_close_matches(searched, jobs, n=3, cutoff=0.3)
+        if len(response) == 0:
+            return redirect(f'/{searched}/')
+        else:
+            return redirect(f'/{searched}/{response[0]}/')
+    return render(request, 'homepage.html', context={'jobs':jobs, 'popular':random.sample(jobs, 6)})
+
 
 class ArtisanListView(ListView):
     context_object_name = 'artisans'
     template_name = 'index.html'
     slug = "home"
+    alternative = False
     paginate_by = 12
 
     def get(self, request, *args, **kwargs):
@@ -27,11 +40,36 @@ class ArtisanListView(ListView):
         if self.slug == "home" or self.slug == "all":
             return queryset
         else:
-            return queryset.filter(services__contains=self.slug)
+            return queryset.filter(services__contains=self.slug.lower())
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['skills'] = SKILLS
+        return context
+
+
+class AlternativeArtisanView(ListView):
+    context_object_name = 'artisans'
+    template_name = 'index.html'
+    slug = ""
+    searched = ""
+    paginate_by = 12
+
+    def get(self, request, *args, **kwargs):
+        self.slug = self.kwargs.get('slug')
+        self.searched = self.kwargs.get('searched')
+        return super().get(request, *args, **kwargs)
+
+    def get_queryset(self):
+        queryset = UserProfile.objects.filter(user_type='artisan').filter(artisan_approved=True).filter(blocked=False).order_by('-pk')
+        return queryset.filter(services__contains=self.slug.lower())
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['skills'] = SKILLS
+        context['alternative'] = True
+        context['searched'] = self.searched
+        context['job'] = self.slug
         return context
 
 
