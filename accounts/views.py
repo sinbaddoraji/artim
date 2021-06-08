@@ -18,7 +18,10 @@ from django.core.mail import send_mail
 
 def user_login(request):
     if request.user.is_authenticated:
-        return redirect('accounts:dashboard')
+        if request.user.userprofile or request.user.is_staff:
+            return redirect('accounts:dashboard')
+        else:
+            return redirect('/accounts/profile/')
         
     form = UserLoginForm()
 
@@ -48,12 +51,11 @@ def user_login(request):
 
 def user_register(request):
     if request.user.is_authenticated:
-        return redirect('/accounts/profile/')
-        # if request.user.userprofile or request.user.is_staff:
-        #     return redirect('accounts:dashboard')
-        # else:
-        #     return redirect('/accounts/profile/')
-
+        if request.user.userprofile or request.user.is_staff:
+            return redirect('accounts:dashboard')
+        else:
+            return redirect('/accounts/profile/')
+            
     form = UserForm()
     profileform = UserProfileForm()
 
@@ -95,6 +97,7 @@ def userlogout(request):
 
 
 class Dashboard(LoginRequiredMixin, TemplateView):
+    
     template_name = 'accounts/dashboard.html'
     
     def get_context_data(self, **kwargs):
@@ -110,6 +113,13 @@ class Dashboard(LoginRequiredMixin, TemplateView):
                 context['customer_orders'] = UserOrder.objects.filter(customerorder=self.request.user.userprofile)
             else:
                 context['artisan_orders'] = UserOrder.objects.filter(artisanorder=self.request.user.userprofile)
+                
+                artisan_total = 0
+                for x in context['artisan_orders']:
+                    if x.order_completed:
+                        artisan_total = artisan_total + x.order_price
+                context['artisan_total'] = artisan_total
+                
         return context
 
     def test_func(self):
