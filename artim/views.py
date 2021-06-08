@@ -20,7 +20,7 @@ def homepage(request):
         if len(response) == 0:
             return redirect(f'/{searched}/')
         else:
-            return redirect(f'/{searched}/{response[0]}/')
+            return redirect(f'/{searched}/check/{response[0]}/')
     return render(request, 'homepage.html', context={'jobs':jobs, 'popular':random.sample(jobs, 6)})
 
 

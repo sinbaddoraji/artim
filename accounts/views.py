@@ -48,7 +48,11 @@ def user_login(request):
 
 def user_register(request):
     if request.user.is_authenticated:
-        return redirect('accounts:dashboard')
+        return redirect('/accounts/profile/')
+        # if request.user.userprofile or request.user.is_staff:
+        #     return redirect('accounts:dashboard')
+        # else:
+        #     return redirect('/accounts/profile/')
 
     form = UserForm()
     profileform = UserProfileForm()
