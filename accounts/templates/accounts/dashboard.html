@@ -56,7 +56,7 @@
                 <i class="far fa-calendar-alt form_text my-2"></i> <strong>{{user.userprofile.age}} years old</strong><br />
                 <i class="fas fa-venus-mars form_text my-2"></i> <strong>{{user.userprofile.gender.title}}</strong><br />
                 <i class="fas fa-map-marker-alt form_text my-2"></i> <strong>{{user.userprofile.city.title}}, UK</strong>
-                <h5><i class="fas fa-pound-sign form_text my-2"></i><strong>{{user.userprofile.price}}/hr</strong></h5>
+                <h5><i class="fas fa-pound-sign form_text my-2"></i><strong>{{user.userprofile.price}} Flat rate</strong></h5>
                 <div class="star my-2">
                     {% if user.userprofile.get_rating >= 1 %}
                     <i class="fas fa-star"></i>
@@ -129,7 +129,7 @@
                         <strong class="form_text" style="font-size: 1.3rem;">{{artisan.user.first_name.title}} {{artisan.user.last_name.title}}</strong>
                     </div>
                     <div class="col">
-                        <i class="fas fa-pound-sign form_text"></i><strong style="color: black;">{{artisan.price}}/hr</strong>
+                        <i class="fas fa-pound-sign form_text"></i><strong style="color: black;">{{artisan.price}} Flat rate</strong>
                     </div>
                     <div class="col">
                         <i class="fas fa-map-marker-alt form_text"></i> <strong style="color: black;">{{artisan.city.title}}, UK</strong>
@@ -196,7 +196,7 @@
                                     <div class="accepted_text"><strong>ACCEPTED</strong></div>
                                 {% endif %}
                             </div>
-                            <h5><i class="fas fa-tools form_text"></i> {{order.service.title}} at <i class="fas fa-pound-sign form_text"></i><span style="color: black;">{{order.order_price}}/hr</span></h5>
+                            <h5><i class="fas fa-tools form_text"></i> {{order.service.title}} at <i class="fas fa-pound-sign form_text"></i><span style="color: black;">{{order.order_price}} Flat rate</span></h5>
                             <div style="font-weight: 600; font-style: italic; font-size: large;">
                                 <i class="fas fa-pen-square form_text"></i> {{order.message}}
                             </div>
@@ -222,7 +222,7 @@
                                  
                                 <div class="rejected_text"><strong>REJECTED</strong></div>
                             </div>
-                            <h5><i class="fas fa-tools form_text"></i> {{order.service.title}} at <i class="fas fa-pound-sign form_text"></i><span style="color: black;">{{order.order_price}}/hr</span></h5>
+                            <h5><i class="fas fa-tools form_text"></i> {{order.service.title}} at <i class="fas fa-pound-sign form_text"></i><span style="color: black;">{{order.order_price}} Flat rate</span></h5>
                             <div style="font-weight: 600; font-style: italic; font-size: large;">
                                 <i class="fas fa-pen-square form_text"></i> {{order.message}}
                             </div>
@@ -234,7 +234,7 @@
                                     <div class="col">Request from <span class="form_text" ><strong style="font-size: larger;">{{order.customerorder.user.username}}</strong></span></div>
                                <div class="pending_text"><strong>PENDING</strong></div>
                             </div>
-                            <h5><i class="fas fa-tools form_text"></i> {{order.service.title}} at <i class="fas fa-pound-sign form_text"></i><span style="color: black;">{{order.order_price}}/hr</span></h5>
+                            <h5><i class="fas fa-tools form_text"></i> {{order.service.title}} at <i class="fas fa-pound-sign form_text"></i><span style="color: black;">{{order.order_price}} Flat rate</span></h5>
                             <div style="font-weight: 600; font-style: italic; font-size: large;">
                                 <i class="fas fa-pen-square form_text"></i> {{order.message}}
                             </div>
@@ -270,7 +270,7 @@
                                 <div class="accepted_text"><strong>ACCEPTED</strong></div>
                                 {% endif %}
                             </div>
-                            <h5><i class="fas fa-tools form_text"></i> {{order.service.title}} at <i class="fas fa-pound-sign form_text"></i><span style="color: black;">{{order.order_price}}/hr</span></h5>
+                            <h5><i class="fas fa-tools form_text"></i> {{order.service.title}} at <i class="fas fa-pound-sign form_text"></i><span style="color: black;">{{order.order_price}} Flat rate</span></h5>
                             <div style="font-weight: 600; font-style: italic; font-size: large;">
                                 <i class="fas fa-pen-square form_text"></i> {{order.message}}
                             </div>
@@ -293,7 +293,7 @@
                                  
                                 <div class="rejected_text"><strong>REJECTED</strong></div>
                             </div>
-                            <h5><i class="fas fa-tools form_text"></i> {{order.service.title}} at <i class="fas fa-pound-sign form_text"></i><span style="color: black;">{{order.order_price}}/hr</span></h5>
+                            <h5><i class="fas fa-tools form_text"></i> {{order.service.title}} at <i class="fas fa-pound-sign form_text"></i><span style="color: black;">{{order.order_price}} Flat rate</span></h5>
                             <div style="font-weight: 600; font-style: italic; font-size: large;">
                                 <i class="fas fa-pen-square form_text"></i> {{order.message}}
                             </div>
@@ -305,7 +305,7 @@
                                     <div class="col"><a style="text-decoration: none;" class="form_text" href="{% url 'user-detail' user_type=order.artisanorder.user_type slug=order.artisanorder.user.username %}"><i class="fas fa-user-tag form_text my-2"></i> <strong style="font-size: larger;">{{order.artisanorder.user.username}}</strong></a></div>
                                <div class="pending_text"><strong>PENDING</strong></div>
                             </div>
-                            <h5><i class="fas fa-tools form_text"></i> {{order.service.title}} at <i class="fas fa-pound-sign form_text"></i><span style="color: black;">{{order.order_price}}/hr</span></h5>
+                            <h5><i class="fas fa-tools form_text"></i> {{order.service.title}} at <i class="fas fa-pound-sign form_text"></i><span style="color: black;">{{order.order_price}}</span></h5>
                             <div style="font-weight: 600; font-style: italic; font-size: large;">
                                 <i class="fas fa-pen-square form_text"></i> {{order.message}}
                             </div>

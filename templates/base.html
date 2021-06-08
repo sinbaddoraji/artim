@@ -20,7 +20,7 @@
 
 <body>
     <header>
-        <nav class="navbar navbar-expand-lg sticky-top navbar-light" style="background-color: white;">
+        <nav class="navbar navbar-expand-lg sticky-top navbar-light base" style="background-color: white;">
             <div class="container">
                 <a class="navbar-brand" href="{% url 'homepage' %}"><strong><span class="blue">ARTIM<span></strong></a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -59,20 +59,20 @@
                                             <hr class="dropdown-divider">
                                         </li>
                                         {% if user.is_staff %}
-                                        <li><a class="dropdown-item" href="{% url 'accounts:manage_artisans' %}"><i class="fas fa-users-cog"></i> Manage Artisans</a></li>
-                                        <li><a class="dropdown-item" href="{% url 'accounts:manage_customers' %}"><i class="fas fa-users"></i> Manage Customers</a></li>
-                                        <li><a class="dropdown-item" href="{% url 'accounts:blocked_users' %}"><i class="fas fa-ban"></i> Blocked Users</a></li>
-                                        <li><a class="dropdown-item" href="{% url 'accounts:changepassword' %}"><i class="fas fa-cogs"></i> Change
-                                                Password</a></li>
+                                            <li><a class="dropdown-item" href="{% url 'accounts:manage_artisans' %}"><i class="fas fa-users-cog"></i> Manage Artisans</a></li>
+                                            <li><a class="dropdown-item" href="{% url 'accounts:manage_customers' %}"><i class="fas fa-users"></i> Manage Customers</a></li>
+                                            <li><a class="dropdown-item" href="{% url 'accounts:blocked_users' %}"><i class="fas fa-ban"></i> Blocked Users</a></li>
+                                            <li><a class="dropdown-item" href="{% url 'accounts:changepassword' %}"><i class="fas fa-cogs"></i> Change
+                                                    Password</a></li>
                                         {% else %}
-                                        <li><a class="dropdown-item" href="{% url 'accounts:updateprofile' slug=user.userprofile.slug %}"><i
-                                                    class="fas fa-sliders-h"></i> Edit Profile</a></li>
-                                        {% if user.userprofile.bank_details%}
-                                        <li><a class="dropdown-item" href="#"><i class="fas fa-university"></i> Edit Bank details</a></li>
-                                        {% endif %}
-                                        <li><a class="dropdown-item" href="{% url 'accounts:changepassword' %}"><i class="fas fa-cogs"></i> Change
-                                                Password</a></li>
-                                        <li><a class="dropdown-item" href="{% url 'accounts:deleteaccount' slug=user.userprofile.slug %}"><i class="fas fa-trash"></i> Delete My Account</a></li>
+                                            <li><a class="dropdown-item" href="{% url 'accounts:updateprofile' slug=user.userprofile.slug %}">
+                                                <i class="fas fa-sliders-h"></i> Edit Profile</a></li>
+                                            {% if user.userprofile.bank_details%}
+                                                <li><a class="dropdown-item" href="#"><i class="fas fa-university"></i> Edit Bank details</a></li>
+                                            {% endif %}
+                                                <li><a class="dropdown-item" href="{% url 'accounts:changepassword' %}"><i class="fas fa-cogs"></i> Change
+                                                        Password</a></li>
+                                                <li><a class="dropdown-item" href="{% url 'accounts:deleteaccount' slug=user.userprofile.slug %}"><i class="fas fa-trash"></i> Delete My Account</a></li>
                                         {% endif %}   
                                     </ul>
                                 </div>

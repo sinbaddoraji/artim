@@ -43,7 +43,7 @@
         <i class="far fa-calendar-alt form_text my-2"></i> <strong>{{user.userprofile.age}} years old</strong><br />
         <i class="fas fa-venus-mars form_text my-2"></i> <strong>{{user.userprofile.gender.title}}</strong><br />
         <i class="fas fa-map-marker-alt form_text my-2"></i> <strong>{{user.userprofile.city.title}}, UK</strong>
-        <h5><i class="fas fa-pound-sign form_text my-2"></i><strong>{{user.userprofile.price}}/hr</strong></h5>
+        <h5><i class="fas fa-pound-sign form_text my-2"></i><strong>{{user.userprofile.price}} Flat rate</strong></h5>
         <div class="star my-2">
             {% if user.userprofile.get_rating >= 1 %}
             <i class="fas fa-star"></i> {% elif user.userprofile.get_rating >= 0.5 %}
@@ -81,7 +81,7 @@
                             <strong class="form_text" style="font-size: 1.3rem;">{{artisan.user.first_name.title}} {{artisan.user.last_name.title}}</strong>
                         </div>
                         <div class="col">
-                            <i class="fas fa-pound-sign form_text"></i><strong style="color: black;">{{artisan.price}}/hr</strong>
+                            <i class="fas fa-pound-sign form_text"></i><strong style="color: black;">{{artisan.price}} Flat rate</strong>
                         </div>
                         <div class="col">
                             <i class="fas fa-map-marker-alt form_text"></i> <strong style="color: black;">{{artisan.city.title}}, UK</strong>

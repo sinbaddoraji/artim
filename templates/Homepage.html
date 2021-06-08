@@ -11,17 +11,31 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
     <link rel="stylesheet" href="{% static "/css/master.css" %}">
     <title>
-        {% block title %}
-
-        {% endblock title %}
+        Welcome to Artim
     </title>
+    <style>
+        body { 
+            background: url('{% static "/images/Slideshow/1.jpg" %}') no-repeat center center fixed; 
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+        }
+        datalist {
+            font-family: Arial, sans-serif;
+            font-size: 40px;
+            font-style: italic;
+        }
+        datalist#fixed {
+            -webkit-appearance: none;
+        }
+      </style>
 </head>
-
 <body>
     <header>
-        <nav class="navbar navbar-expand-lg sticky-top navbar-light" style="background-color: transparent">
+        <nav class="navbar navbar-expand-lg sticky-top navbar-dark homepage">
             <div class="container">
-                <a class="navbar-brand" href="{% url 'homepage' %}"><strong><span class="blue">ARTIM<span></strong></a>
+                <a class="navbar-brand" href="{% url 'homepage' %}"><strong><span style="color: white;">ARTIM<span></strong></a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                     aria-expanded="false" aria-label="Toggle navigation">
@@ -30,66 +44,86 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="{% url 'index' "home" %}"><strong><span class="blue">Browse
+                            <a class="nav-link active" aria-current="page" href="{% url 'index' "home" %}"><strong><span style="color: white;">Browse
                                         Artisans</span></strong></a>
                         </li>
                     </ul>
                     <ul class="navbar-nav mb-2 mb-lg-0">
 
                         {% if user.is_authenticated %}
-                        <div class="nav-item dropdown drop form_text">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
-                                aria-expanded="false">
-                                <i class="fas fa-user-circle fa-1x form_text"></i><span class="form_text" style="font-size: 1.2rem;"> {{user.first_name.title}} {% if user.is_staff %}
-                                <span class="badge bg-success">Admin</span>
-                                {% else %}
-                                {% if user.userprofile.user_type == "artisan" %}
-                                <span class="badge bg-primary">Artisan</span>
-                                {% else %}
-                                <span class="badge bg-info">Customer</span>
-                                {% endif %}
-                                {% endif %}</span>
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" href="{% url 'accounts:dashboard' %}"><i class="fas fa-id-card"></i> Your Dashboard</a>
-                                </li>
-                                <li>
-                                    <hr class="dropdown-divider">
-                                </li>
-                                {% if user.is_staff %}
-                                <li><a class="dropdown-item" href="{% url 'accounts:manage_artisans' %}"><i class="fas fa-users-cog"></i> Manage Artisans</a></li>
-                                <li><a class="dropdown-item" href="{% url 'accounts:manage_customers' %}"><i class="fas fa-users"></i> Manage Customers</a></li>
-                                <li><a class="dropdown-item" href="{% url 'accounts:blocked_users' %}"><i class="fas fa-ban"></i> Blocked Users</a></li>
-                                <li><a class="dropdown-item" href="{% url 'accounts:changepassword' %}"><i class="fas fa-cogs"></i> Change
-                                        Password</a></li>
-                                {% else %}
-                                <li><a class="dropdown-item" href="{% url 'accounts:updateprofile' slug=user.userprofile.slug %}"><i
-                                            class="fas fa-sliders-h"></i> Edit Profile</a></li>
-                                {% if user.userprofile.bank_details%}
-                                <li><a class="dropdown-item" href="#"><i class="fas fa-university"></i> Edit Bank details</a></li>
-                                {% endif %}
-                                <li><a class="dropdown-item" href="{% url 'accounts:changepassword' %}"><i class="fas fa-cogs"></i> Change
-                                        Password</a></li>
-                                <li><a class="dropdown-item" href="{% url 'accounts:deleteaccount' slug=user.userprofile.slug %}"><i class="fas fa-trash"></i> Delete My Account</a></li>
-                                {% endif %}   
-                            </ul>
-                        </div>
-                        <li class="nav-item">
-                            <a class="nav-link" aria-current="page" href="{% url 'accounts:logout' %}">
-                                <button class="btn btn-outline-primary"><strong><i class="fas fa-power-off"></i> Sign Out</strong></button>
-                            </a>
-                        </li>
+                            {% if user.userprofile or user.is_staff %}
+                                <div class="nav-item dropdown drop form_text">
+                                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+                                        aria-expanded="false">
+                                        <i class="fas fa-user-circle fa-1x form_text_white"></i><span class="form_text_white" style="font-size: 1.2rem;"> {{user.first_name.title}} {% if user.is_staff %}
+                                        <span class="badge bg-success">Admin</span>
+                                        {% else %}
+                                        {% if user.userprofile.user_type == "artisan" %}
+                                        <span class="badge bg-primary">Artisan</span>
+                                        {% else %}
+                                        <span class="badge bg-info">Customer</span>
+                                        {% endif %}
+                                        {% endif %}</span>
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <li><a class="dropdown-item" href="{% url 'accounts:dashboard' %}"><i class="fas fa-id-card"></i> Your Dashboard</a>
+                                        </li>
+                                        <li>
+                                            <hr class="dropdown-divider">
+                                        </li>
+                                        {% if user.is_staff %}
+                                            <li><a class="dropdown-item" href="{% url 'accounts:manage_artisans' %}"><i class="fas fa-users-cog"></i> Manage Artisans</a></li>
+                                            <li><a class="dropdown-item" href="{% url 'accounts:manage_customers' %}"><i class="fas fa-users"></i> Manage Customers</a></li>
+                                            <li><a class="dropdown-item" href="{% url 'accounts:blocked_users' %}"><i class="fas fa-ban"></i> Blocked Users</a></li>
+                                            <li><a class="dropdown-item" href="{% url 'accounts:changepassword' %}"><i class="fas fa-cogs"></i> Change
+                                                    Password</a></li>
+                                        {% else %}
+                                            <li><a class="dropdown-item" href="{% url 'accounts:updateprofile' slug=user.userprofile.slug %}">
+                                                <i class="fas fa-sliders-h"></i> Edit Profile</a></li>
+                                            {% if user.userprofile.bank_details%}
+                                                <li><a class="dropdown-item" href="#"><i class="fas fa-university"></i> Edit Bank details</a></li>
+                                            {% endif %}
+                                                <li><a class="dropdown-item" href="{% url 'accounts:changepassword' %}"><i class="fas fa-cogs"></i> Change
+                                                        Password</a></li>
+                                                <li><a class="dropdown-item" href="{% url 'accounts:deleteaccount' slug=user.userprofile.slug %}"><i class="fas fa-trash"></i> Delete My Account</a></li>
+                                        {% endif %}   
+                                    </ul>
+                                </div>
+                            {% else %}
+                                <div class="nav-item dropdown drop form_text">
+                                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+                                        aria-expanded="false">
+                                        <i class="fas fa-user-circle fa-1x form_text"></i><span class="form_text" style="font-size: 1.2rem;"> {{user.first_name.title}}
+                                        </span>
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                        <li><a class="dropdown-item" href="{% url 'social_dashboard' %}"><i class="fas fa-id-card"></i> Your Dashboard</a>
+                                        </li>
+                                        <li>
+                                            <hr class="dropdown-divider">
+                                        </li>
+                                        <li><a class="dropdown-item" href="#"><i class="fas fa-cogs"></i> Change
+                                                Password</a></li>
+                                        <li><a class="dropdown-item" href="#"><i class="fas fa-trash"></i> Delete My Account</a></li>  
+                                    </ul>
+                                </div>
+                            {% endif %}
+                            <li class="nav-item">
+                                <a class="nav-link" aria-current="page" href="{% url 'accounts:logout' %}">
+                                    <button class="btn btn-outline-info"><strong><i class="fas fa-power-off"></i> Sign Out</strong></button>
+                                </a>
+                            </li>
                         {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" aria-current="page" href="{% url 'accounts:login' %}">
-                                <button class="btn btn-outline-primary"><strong>Sign In</strong></button>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" aria-current="page" href="{% url 'accounts:register' %}">
-                                <button class="btn btn-outline-primary"><strong>Register</strong></button>
-                            </a>
-                        </li>
+                            <li class="nav-item">
+                                <a class="nav-link" aria-current="page" href="{% url 'accounts:login' %}">
+                                    <button class="btn btn-outline-info"><strong>Sign In</strong></button>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" aria-current="page" href="{% url 'accounts:register' %}">
+                                    <button class="btn btn-outline-info"><strong>Register</strong></button>
+                                </a>
+                            </li>
                         {% endif %}
 
                     </ul>
@@ -98,63 +132,55 @@
         </nav>
     </header>
     <main>
-      
-
-
-
-
-      <div class="child" style="margin-top:100px;margin-left:230px;width: 1000px; height: 500px; position: absolute;  background-color: rgba(255, 255, 255, 0.822);">
-        <br><br>
-        <div style="margin-left: 40px; width: 60%;">
-          <h1 style="color: blue; font-size:500%">Artim</h1>
-          <h3 style="font-size:160%">Meet the artisans you need.</h3>
-          <br>
-          <h5 style="font-size: 100%; overflow-wrap:break-word; width:auto">
-            Artim provides our numerous customers and skilled personnels 
-            the perfect platform to interact. We provide prompt services in various 
-            capacities which ultimately give our customers 
-            the best customer experience with total satisfaction.
-          </h5>
-  
-          <br><br>
-          <form action="/action_page.php">
-            <input size="50" type="text" placeholder="Try Typing 'Plumber'..." name="search">
-            <button class="btn btn-primary" type="submit"><strong>Search</strong></button>
-          </form>
-          
-          <br>
-          <div>
-            <p>
-              Popular: &nbsp;&nbsp;
-              <a href="{% url 'index' "plumber" %}">Plumber</a>&nbsp;&nbsp;
-              <a href="{% url 'index' "painter" %}">Painter</a>&nbsp;&nbsp;
-              <a href="{% url 'index' "electrician" %}">Electrician</a>&nbsp;&nbsp;
-              <a href="{% url 'index' "butcher" %}">Butcher</a>&nbsp;&nbsp;
-              <a href="{% url 'index' "tatcher" %}">Tatcher</a>
-            </p>
-          </div>
+    <div class="container">
+        <div class="row">
+            <div class="col"></div>
+            <div class="col-10 col-md-10 col-lg-10 col-xl-8" style="margin-top:100px; background-color: rgba(255, 255, 255, 0.822);">
+                <br><br>
+                <div class="jumbotrn">
+                <h1 style="font-weight: bold; font-size:500%" class="blue">Artim</h1>
+                <h3 style="font-weight: bold; font-size:160%" >Meet the artisans you need</h3>
+                <h5 style="font-weight: bold; font-size: 100%; overflow-wrap:break-word; width:auto">
+                    Artim provides our numerous customers and skilled personnels 
+                    the perfect platform to interact. We provide prompt services in various 
+                    capacities which ultimately give our customers 
+                    the best customer experience with total satisfaction.
+                </h5>
+                <div class="row">
+                    <div class="col-md-8">
+                        <form method="post" autocomplete="on">
+                            {% csrf_token %}
+                            <div class="input-group">
+                                <input type="search" name="search" list="artisan_jobs" placeholder="Try Typing something" autocomplete="on" class="form-control" required>
+                                <button type="submit" class="btn btn-primary"><strong><i class="fas fa-search"></i> SEARCH</strong></button>
+                            </div>
+                        </form>
+                        <datalist id="artisan_jobs" style="font-size: xx-large;" class="blue">
+                            {% for job in jobs %}
+                                <option value="{{job}}">
+                            {% endfor %}
+                        </datalist>
+                    </div>
+                </div>
+                
+                <br>
+                    <div>
+                        <p>
+                        Popular:
+                        {% for job in popular %}
+                        <span class="mx-2 form_text"><a href="{% url 'index' job %}">{{job}}</a></span>
+                        {% endfor %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="col"></div>
         </div>
-        
+    </div>
         <br>
-        <p></p>
-      </div>
-
-      <div style="width: auto; height: auto;">
-        <img class="slide" src="{% static "/images/Slideshow/1.jpg" %}" style="width: 100%; height: 40%;">
-        <img class="slide" src="{% static "/images/Slideshow/2.jpg" %}" style="width: 100%; height: 40%;">
-        <img class="slide" src="{% static "/images/Slideshow/3.jpg" %}" style="width: 100%; height: 40%;">
-        <img class="slide" src="{% static "/images/Slideshow/4.jpg" %}" style="width: 100%; height: 40%;">
-        <img class="slide" src="{% static "/images/Slideshow/5.jpg" %}" style="width: 100%; height: 40%;">
-        <img class="slide" src="{% static "/images/Slideshow/6.jpg" %}" style="width: 100%; height: 40%;">
-        <img class="slide" src="{% static "/images/Slideshow/7.jpg" %}" style="width: 100%; height: 40%;">
-        <img class="slide" src="{% static "/images/Slideshow/8.jpg" %}" style="width: 100%; height: 40%;">
-        <img class="slide" src="{% static "/images/Slideshow/9.jpg" %}" style="width: 100%; height: 40%;">
-      </div>
-
-      
     </main>
     <footer class="mu-3 mb-1">
-        <div class="container text-center blue">
+        <div class="container text-center" style="color: white;">
             <strong>Copyright &copy; Artim</strong><br />
             <strong>Developed for 7047CEM by Group 1</strong>
         </div>
@@ -164,7 +190,6 @@
     </script>
 
 </body>
-
 <script>
 
   var slideIndex = 1;
@@ -182,31 +207,28 @@
     showDivs(slideIndex += n);
   }
 
+
   function showDivs(n) {
+    var bodyImage = document.body.style.background;
+    var bodyImageSize = document.body.style.backgroundSize;
+    var images = [
+        'static/images/Slideshow/1.jpg',
+        'static/images/Slideshow/2.jpg',
+        'static/images/Slideshow/3.jpg',
+        'static/images/Slideshow/4.jpg',
+        'static/images/Slideshow/5.jpg',
+        'static/images/Slideshow/6.jpg',
+        'static/images/Slideshow/7.jpg',
+        'static/images/Slideshow/8.jpg',
+        'static/images/Slideshow/9.jpg',
+        'static/images/Slideshow/10.jpg',
+    ]
     var i;
-    var x = document.getElementsByClassName("slide");
-    if (n > x.length) {slideIndex = 1}
-    if (n < 1) {slideIndex = x.length} ;
-    for (i = 0; i < x.length; i++) {
-      x[i].style.display = "none";
-    }
-    x[slideIndex-1].style.display = "block";
+    if (n > images.length) {slideIndex = 1}
+    if (n < 1) {slideIndex = images.length} ;
+    document.body.style.background = `url(${images[slideIndex-1]}) no-repeat center center fixed`;
+    document.body.style.backgroundSize = "cover";
+
   }
   </script>
-
-  <style>
-    button {
-    /* Same as before */
-    transition: background-position 275ms ease;
-    }
-    button:hover {
-      background-position: 0 100%;
-    }
-    .child {
-      margin: 0 auto;
-    }
-    
-
-  </style>
-
 </html>

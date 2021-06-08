@@ -44,7 +44,7 @@
                 <i class="far fa-calendar-alt form_text my-2"></i> <strong>{{user.userprofile.age}} years old</strong><br />
                 <i class="fas fa-venus-mars form_text my-2"></i> <strong>{{user.userprofile.gender.title}}</strong><br />
                 <i class="fas fa-map-marker-alt form_text my-2"></i> <strong>{{user.userprofile.city.title}}, UK</strong>
-                <h5><i class="fas fa-pound-sign form_text my-2"></i><strong>{{user.userprofile.price}}/hr</strong></h5>
+                <h5><i class="fas fa-pound-sign form_text my-2"></i><strong>{{user.userprofile.price}}Flat rate</strong></h5>
                 <div class="star my-2">
                     {% if user.userprofile.get_rating >= 1 %}
                     <i class="fas fa-star"></i>
