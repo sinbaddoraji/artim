@@ -35,7 +35,7 @@ urlpatterns = [
     ),
     path('', homepage, name='homepage'),
     path('<slug>/', ArtisanListView.as_view(), name='index'),
-    path('<str:searched>/<slug:slug>/', AlternativeArtisanView.as_view(), name='alternative'),
+    path('<str:searched>/check/<slug:slug>/', AlternativeArtisanView.as_view(), name='alternative'),
     path('account/', include('accounts.urls')),
     path('order/', include('order.urls')),
     path('profile/<str:user_type>/<slug:slug>/', UserDetailView.as_view(), name='user-detail'),
