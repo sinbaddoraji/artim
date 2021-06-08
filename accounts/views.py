@@ -91,6 +91,7 @@ def userlogout(request):
 
 
 class Dashboard(LoginRequiredMixin, TemplateView):
+    
     template_name = 'accounts/dashboard.html'
     
     def get_context_data(self, **kwargs):
@@ -106,6 +107,13 @@ class Dashboard(LoginRequiredMixin, TemplateView):
                 context['customer_orders'] = UserOrder.objects.filter(customerorder=self.request.user.userprofile)
             else:
                 context['artisan_orders'] = UserOrder.objects.filter(artisanorder=self.request.user.userprofile)
+                
+                artisan_total = 0
+                for x in context['artisan_orders']:
+                    if x.order_completed:
+                        artisan_total = artisan_total + x.order_price
+                context['artisan_total'] = artisan_total
+                
         return context
 
     def test_func(self):

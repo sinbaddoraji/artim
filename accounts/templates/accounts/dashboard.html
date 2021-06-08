@@ -180,6 +180,9 @@
             </div>
             {% else %}
                 <div class="text-center my-3">
+                    <h4 class="form_text">Total Made : £{{artisan_total}}</h4>
+                </div>
+                <div class="text-center my-3">
                     <h4 class="form_text">Your requests from customers</h4>
                 </div>
                 {% for order in artisan_orders reversed%}
