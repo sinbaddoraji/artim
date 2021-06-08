@@ -18,7 +18,10 @@ from django.core.mail import send_mail
 
 def user_login(request):
     if request.user.is_authenticated:
-        return redirect('accounts:dashboard')
+        if request.user.userprofile or request.user.is_staff:
+            return redirect('accounts:dashboard')
+        else:
+            return redirect('/accounts/profile/')
         
     form = UserLoginForm()
 
@@ -48,7 +51,10 @@ def user_login(request):
 
 def user_register(request):
     if request.user.is_authenticated:
-        return redirect('accounts:dashboard')
+        if request.user.userprofile or request.user.is_staff:
+            return redirect('accounts:dashboard')
+        else:
+            return redirect('/accounts/profile/')
 
     form = UserForm()
     profileform = UserProfileForm()
