@@ -13,14 +13,17 @@ import random, difflib
 def homepage(request):
     jobs = []
     for job in SKILLS:
-        jobs.append(job[1])
+        jobs.append(job[0])
     if request.method == "POST":
         searched = request.POST.get("search")
-        response = difflib.get_close_matches(searched, jobs, n=3, cutoff=0.3)
-        if len(response) == 0:
+        if searched.lower() in jobs:
             return redirect(f'/{searched}/')
         else:
-            return redirect(f'/{searched}/{response[0]}/')
+            response = difflib.get_close_matches(searched.lower(), jobs, n=3, cutoff=0.3)
+            if len(response) == 0:
+                return redirect(f'/{searched}/')
+            else:
+                return redirect(f'/{searched}/check/{response[0]}/')
     return render(request, 'homepage.html', context={'jobs':jobs, 'popular':random.sample(jobs, 6)})
 
 
