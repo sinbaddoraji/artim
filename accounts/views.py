@@ -79,12 +79,16 @@ def user_register(request):
             user.save()
             user_profile.save()
 
-            send_mail(
+            try:
+                send_mail(
                 'Welcome to ARTIM',
                 f'Hi {first_name}, thanks for registering on ARTIM, we hope you enjoy using the website.',
                 'ARTIM <noreply@yankeytechnologies.topeyankey.com>',
                 [email],
-            )
+                )
+            except:
+                pass
+            
             return redirect('accounts:success', info=form.cleaned_data.get('first_name'))
 
 

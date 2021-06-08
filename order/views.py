@@ -43,7 +43,7 @@ def order_service(request, slug):
                         'error':'Please fill in the form properly.',
                         }
                     )
-        return render(request, 'order_form.html', context={'artisan':slug, 'services':services})
+        return render(request, 'order_form.html', context={'artisan':artisan, 'services':services})
     else:
         messages.error(request, f"You can't access that page, If you attempt that again you might be blocked.")
         return redirect('accounts:dashboard')
@@ -66,7 +66,8 @@ def payment_page(request):
     if request.method == "POST":
         return redirect('orders:payment_completed')
 
-    return render(request, 'take_payment.html', context={'form':form, 'price':order['price'], 'artisan':order['artisan']})
+    artisan = get_object_or_404(User, username=order['artisan'])
+    return render(request, 'take_payment.html', context={'form':form, 'price':order['price'], 'artisan':artisan})
 
 
 @csrf_exempt
@@ -118,12 +119,15 @@ def accept_or_reject_request(request, order, action):
         if request.user.userprofile.user_type == "customer":
             order = UserOrder.objects.get(pk=order)
             order.completed()
-            send_mail(
-                    f'Your service rendered has been marked as completed',
-                    f"Hi {order.artisanorder.user.first_name}, {order.customerorder.user.first_name} has marked your service as completed and your funds have been deposited to your account. Thanks working with ARTIM",
-                    'ARTIM <noreply@yankeytechnologies.topeyankey.com>',
-                    [order.artisanorder.user.email],
-                )
+            try:
+                send_mail(
+                        f'Your service rendered has been marked as completed',
+                        f"Hi {order.artisanorder.user.first_name}, {order.customerorder.user.first_name} has marked your service as completed and your funds have been deposited to your account. Thanks working with ARTIM",
+                        'ARTIM <noreply@yankeytechnologies.topeyankey.com>',
+                        [order.artisanorder.user.email],
+                    )
+            except:
+                pass
             messages.success(request, f"Order has been marked as completed. Thanks for using ARTIM")
             return redirect('accounts:dashboard')
         else:
@@ -134,23 +138,31 @@ def accept_or_reject_request(request, order, action):
             if action == "accept":
                 order = UserOrder.objects.get(pk=order)
                 order.accepted()
-                send_mail(
-                    f'Your order request for {order.service} has been accepted',
-                    f"Hi {order.customerorder.user.first_name}, you request for {order.artisanorder.user.first_name}'s service on ARTIM. We are sending this email to inform you that your request has been accepted",
-                    'ARTIM <noreply@yankeytechnologies.topeyankey.com>',
-                    [order.customerorder.user.email],
-                )
+                try:
+                    send_mail(
+                        f'Your order request for {order.service} has been accepted',
+                        f"Hi {order.customerorder.user.first_name}, you request for {order.artisanorder.user.first_name}'s service on ARTIM. We are sending this email to inform you that your request has been accepted",
+                        'ARTIM <noreply@yankeytechnologies.topeyankey.com>',
+                        [order.customerorder.user.email],
+                    )
+                except:
+                    pass
                 messages.success(request, f"Request has been accepted, please contact the Customer with the information shown.")
                 return redirect('accounts:dashboard')
             elif action == "reject":
                 order = UserOrder.objects.get(pk=order)
                 order.rejected()
-                send_mail(
+                
+                try:
+                    send_mail(
                     f'Your order request for {order.service} has been rejected',
                     f"Hi {order.customerorder.user.first_name}, we are sorry to let you know that {order.artisanorder.user.first_name} has rejected your request for {order.service}. Please check out another artisan",
                     'ARTIM <noreply@yankeytechnologies.topeyankey.com>',
                     [order.customerorder.user.email],
                 )
+                except:
+                    pass
+                
                 messages.error(request, f"The customer has been notified of the decline")
                 return redirect('accounts:dashboard')
         else:
