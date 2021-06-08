@@ -16,6 +16,7 @@ from django.urls import reverse
 from django.utils.crypto import get_random_string
 from django.views.decorators.csrf import csrf_exempt
 from django.core.mail import send_mail
+import requests
 
 
 @login_required
@@ -73,12 +74,27 @@ def payment_completed(request):
     try:
         order = request.session["order"]
         artisan = get_object_or_404(User, username=order["artisan"])
+        destination = request.user.userprofile.city
+        origin = artisan.userprofile.city
+        response_driving = requests.post(
+            f'https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins="{origin}, UK"&destinations="{destination} UK"&key=AIzaSyDpWjr69HcxTnG5OirZmvl6qvtg2NMpYCM&units=imperial&mode=driving'
+            )
+        response_bicycle = requests.post(
+            f'https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins="{origin}, UK"&destinations="{destination} UK"&key=AIzaSyDpWjr69HcxTnG5OirZmvl6qvtg2NMpYCM&units=imperial&mode=bicycling'
+            )
+        response_walking = requests.post(
+            f'https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins="{origin}, UK"&destinations="{destination} UK"&key=AIzaSyDpWjr69HcxTnG5OirZmvl6qvtg2NMpYCM&units=imperial&mode=walking'
+            )
         UserOrder.objects.create(
                         customerorder = request.user.userprofile,
                         artisanorder = artisan.userprofile,
                         service = order["service"],
                         message = order["message"],
                         order_price = order["price"],
+                        total_distance = round(response_driving.json()['rows'][0]['elements'][0]['distance']['value']/1000*0.621371, 1),
+                        walking_time = response_walking.json()['rows'][0]['elements'][0]['duration']['text'],
+                        driving_time = response_driving.json()['rows'][0]['elements'][0]['duration']['text'],
+                        bicycle_time = response_bicycle.json()['rows'][0]['elements'][0]['duration']['text']
                     )
         del request.session["order"]
     except KeyError:
@@ -94,6 +110,7 @@ def payment_canceled(request):
     except KeyError:
         return redirect('accounts:dashboard')
     return render(request, 'payment_canceled.html')
+
 
 
 def accept_or_reject_request(request, order, action):
@@ -118,7 +135,7 @@ def accept_or_reject_request(request, order, action):
                 order = UserOrder.objects.get(pk=order)
                 order.accepted()
                 send_mail(
-                    f'Your order request for {order.artisanorder.service} has been accepted',
+                    f'Your order request for {order.service} has been accepted',
                     f"Hi {order.customerorder.user.first_name}, you request for {order.artisanorder.user.first_name}'s service on ARTIM. We are sending this email to inform you that your request has been accepted",
                     'ARTIM <noreply@yankeytechnologies.topeyankey.com>',
                     [order.customerorder.user.email],
@@ -129,12 +146,12 @@ def accept_or_reject_request(request, order, action):
                 order = UserOrder.objects.get(pk=order)
                 order.rejected()
                 send_mail(
-                    f'Your order request for {order.artisanorder.service} has been rejected',
+                    f'Your order request for {order.service} has been rejected',
                     f"Hi {order.customerorder.user.first_name}, we are sorry to let you know that {order.artisanorder.user.first_name} has rejected your request for {order.service}. Please check out another artisan",
                     'ARTIM <noreply@yankeytechnologies.topeyankey.com>',
                     [order.customerorder.user.email],
                 )
-                messages.error(request, f"Request has been rejected.")
+                messages.error(request, f"The customer has been notified of the decline")
                 return redirect('accounts:dashboard')
         else:
             messages.error(request, f"You can't access that page, If you attempt that again you might be blocked.")

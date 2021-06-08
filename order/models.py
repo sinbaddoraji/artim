@@ -13,6 +13,10 @@ class UserOrder(models.Model):
     order_rejected = models.BooleanField(default=False)
     order_accepted = models.BooleanField(default=False)
     message = models.TextField(default=False)
+    total_distance = models.CharField(max_length=100)
+    walking_time = models.CharField(max_length=100)
+    driving_time = models.CharField(max_length=100)
+    bicycle_time = models.CharField(max_length=100)
     
     def completed(self):
         self.order_completed = True

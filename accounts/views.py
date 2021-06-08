@@ -14,6 +14,7 @@ from django.contrib import messages
 from .models import UserProfile
 from order.models import UserOrder
 from django.core.mail import send_mail
+import requests
 
 
 def user_login(request):
@@ -55,7 +56,7 @@ def user_register(request):
             return redirect('accounts:dashboard')
         else:
             return redirect('/accounts/profile/')
-            
+
     form = UserForm()
     profileform = UserProfileForm()
 
@@ -99,7 +100,7 @@ def userlogout(request):
 class Dashboard(LoginRequiredMixin, TemplateView):
     
     template_name = 'accounts/dashboard.html'
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         queryset = UserProfile.objects.filter(artisan_approved=False).filter(blocked=False)
@@ -117,7 +118,7 @@ class Dashboard(LoginRequiredMixin, TemplateView):
                 artisan_total = 0
                 for x in context['artisan_orders']:
                     if x.order_completed:
-                        artisan_total = artisan_total + x.order_price
+                        artisan_total += x.order_price
                 context['artisan_total'] = artisan_total
                 
         return context
