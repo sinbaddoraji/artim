@@ -100,6 +100,19 @@ def userlogout(request):
 class Dashboard(LoginRequiredMixin, TemplateView):
     
     template_name = 'accounts/dashboard.html'
+    weather = {}
+
+    def get(self, request, *args, **kwargs):
+        location = self.request.user.userprofile.city
+        url = f'http://api.openweathermap.org/data/2.5/weather?q={location},%20UK&units=metric&appid=9eee9ed9d11b622b3a695c6ced4b56f2'
+        response  = requests.get(url).json()
+        self.weather = {
+            'city' : location,
+            'temperature' : round(int(response['main']['temp']), 0),
+            'description' : response['weather'][0]['description'],
+            'icon' : response['weather'][0]['icon']
+        }
+        return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -120,7 +133,7 @@ class Dashboard(LoginRequiredMixin, TemplateView):
                     if x.order_completed:
                         artisan_total += x.order_price
                 context['artisan_total'] = artisan_total
-                
+                context['weather'] = self.weather
         return context
 
     def test_func(self):
