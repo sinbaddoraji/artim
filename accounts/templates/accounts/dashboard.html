@@ -179,11 +179,18 @@
                 <h4 class="form_text">You are yet to receive a request from a customer. Please check back</h4>
             </div>
             {% else %}
-                <div class="text-center my-3">
-                    <h2><span class="badge bg-success"><i class="fas fa-money-check"></i> £{{artisan_total}}</span></h2>
+                <div class="d-flex justify-content-between">
+                    <div class="text-center my-3">
+                        <h1><span class="badge bg-success"><i class="fas fa-university"></i> £{{artisan_total}}</span></h1>
+                    </div>
+                    <div style="font-weight: 600; font-size: larger;" class="text-end">
+                        <img src="http://openweathermap.org/img/wn/{{weather.icon}}@2x.png" width="50px" height="auto"><br />
+                        {{weather.temperature}} &#176;C<br />
+                        {{weather.description.title}}<br />
+                    </div>
                 </div>
                 <div class="text-center my-3">
-                    <h4 class="form_text">Your requests from customers</h4>
+                    <h4 class="form_text">Request History</h4>
                 </div>
                 {% for order in artisan_orders reversed%}
                     {% if order.order_accepted %}
@@ -193,7 +200,7 @@
                                 {% if order.order_completed %}    
                                     <div class="accepted_text"><span class="badge bg-success"><strong style="font-size: larger;">COMPLETED</strong></span></div>
                                 {% else %}
-                                    <div class="accepted_text"><strong>ACCEPTED</strong></div>
+                                    <div class="accepted_text"><strong>YOU ACCEPTED</strong></div>
                                 {% endif %}
                             </div>
                             <h5><i class="fas fa-tools form_text"></i> {{order.service.title}} at <i class="fas fa-pound-sign form_text"></i><span style="color: black;">{{order.order_price}} Flat rate</span></h5>
@@ -224,9 +231,8 @@
                     {% elif order.order_rejected %}
                         <div class="rejected">
                             <div class="d-flex justify-content-between">
-                                    <div class=""><a style="text-decoration: none;" class="form_text" href="{% url 'user-detail' user_type=order.artisanorder.user_type slug=order.artisanorder.user.username %}"><i class="fas fa-user-tag form_text my-2"></i> <strong>{{order.artisanorder.user.username}}</strong></a></div>
-                                 
-                                <div class="rejected_text"><strong>REJECTED</strong></div>
+                                <div class=""><a style="text-decoration: none;" class="form_text" href="{% url 'user-detail' user_type=order.artisanorder.user_type slug=order.artisanorder.user.username %}"><i class="fas fa-user-tag form_text my-2"></i> <strong>{{order.artisanorder.user.username}}</strong></a></div>
+                            <div class="rejected_text"><strong>YOU REJECTED</strong></div>
                             </div>
                             <h5><i class="fas fa-tools form_text"></i> {{order.service.title}} at <i class="fas fa-pound-sign form_text"></i><span style="color: black;">{{order.order_price}} Flat rate</span></h5>
                             <div style="font-weight: 600; font-style: italic; font-size: large;">
