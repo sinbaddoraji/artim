@@ -151,11 +151,11 @@
                         <form method="post" autocomplete="on">
                             {% csrf_token %}
                             <div class="input-group">
-                                <input type="search" name="search" list="artisan_jobs" placeholder="Try Typing something" autocomplete="on" class="form-control" required>
+                                <input type="search" name="search" list="artisan_jobs" placeholder="Try Typing something..." autocomplete="on" class="form-control" required>
                                 <button type="submit" class="btn btn-primary"><strong><i class="fas fa-search"></i> SEARCH</strong></button>
                             </div>
                         </form>
-                        <datalist id="artisan_jobs" style="font-size: xx-large;" class="blue">
+                        <datalist id="artisan_jobs">
                             {% for job in jobs %}
                                 <option value="{{job}}">
                             {% endfor %}
