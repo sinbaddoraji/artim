@@ -6,10 +6,28 @@
 {% endblock title %}
 
 {% block body %}
+<script src="https://www.google.com/recaptcha/api.js"></script>
+<script src="https://www.google.com/recaptcha/api.js?render=6Lfz7B4bAAAAABL9DZx7PPHKJT9ovKEKh81F6Tii"></script>
+<script>
+    function onSubmit(token) {
+      document.getElementById("form").submit();
+    }
+</script>
+<script>
+    function onClick(e) {
+      e.preventDefault();
+      grecaptcha.ready(function() {
+        grecaptcha.execute('6Lfz7B4bAAAAABL9DZx7PPHKJT9ovKEKh81F6Tii', {action: 'submit'}).then(function(token) {
+            // Add your logic to submit to your backend server here.
+        });
+      });
+    }
+</script>
+
 <div class="row justify-content-center mb-50">
     <div class="col-10 col-md-8 col-lg-6 form_text">
         <h3 align="center" class="blue"><strong>Create your account</strong></h3>
-        <form action="" method="post" enctype="multipart/form-data">
+        <form action="" method="post" enctype="multipart/form-data" id = "form">
             {% csrf_token %}
 
             {% bootstrap_form form layout="floating" %}
@@ -18,8 +36,15 @@
             <span>By clicking REGISTER, you agree to our terms of service, privacy policy and cookie policy</span>
             <br><br> -->
             <div class="d-grid gap-2">
-                <button class="btn btn-primary" type="submit"><strong>REGISTER</strong></button>
+                <button class="btn btn-primary" type="submit" class="g-recaptcha" 
+                data-sitekey="reCAPTCHA_site_key" 
+                data-callback='onSubmit' 
+                data-action='submit'><strong>REGISTER</strong></button>
             </div>
+            <br>
+            This site is protected by reCAPTCHA and the Google
+            <a href="https://policies.google.com/privacy">Privacy Policy</a> and
+            <a href="https://policies.google.com/terms">Terms of Service</a> apply.
         </form>
     </div>
 </div>

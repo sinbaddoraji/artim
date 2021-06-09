@@ -6,6 +6,23 @@
 {% endblock title %}
 
 {% block body %}
+<script src="https://www.google.com/recaptcha/api.js"></script>
+<script src="https://www.google.com/recaptcha/api.js?render=6LcfPh8bAAAAACbRBFFMW05cAtZ6ybRzMSaSQKvI"></script>
+<script>
+    function onSubmit(token) {
+      document.getElementById("form").submit();
+    }
+</script>
+<script>
+    function onClick(e) {
+      e.preventDefault();
+      grecaptcha.ready(function() {
+        grecaptcha.execute('6LcfPh8bAAAAACbRBFFMW05cAtZ6ybRzMSaSQKvI', {action: 'submit'}).then(function(token) {
+            // Add your logic to submit to your backend server here.
+        });
+      });
+    }
+</script>
 <div class="row justify-content-center">
     <div class="col-10 col-md-8 col-lg-6 form_text text-center">
         <h3 class="blue"><strong>Sign in to your account</strong></h3>
@@ -23,6 +40,9 @@
                 <button class="btn btn-primary" type="submit"><strong>SIGN IN</strong></button>
             </div>
         </form>
+
+
+
         <div class="d-grid gap-2 mt-2">
             <a class="btn btn-outline-dark" href="/external/google/login/?process=login" role="button" style="text-transform:none">
                 <img width="20px" style="margin-bottom:3px; margin-right:5px" alt="Google sign-in" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png" />
@@ -31,11 +51,19 @@
         </div>
         <p><em>Don't have an account yet?</em> <a href="{% url 'accounts:register' %}" style="text-decoration: none;">
 
-                <span class="links"><Strong>REGISTER</Strong></span>
+                <span class="links" class="g-recaptcha" 
+                data-sitekey="reCAPTCHA_site_key" 
+                data-callback='onSubmit' 
+                data-action='submit'><Strong>REGISTER</Strong></span>
             </a><br>
             <a href="{% url 'password_reset' %}" class="links" style="text-decoration: none;"><strong>Forgot password or
                     username?</strong></span></a>
         </p>
+
+        <br>
+        This site is protected by reCAPTCHA and the Google
+        <a href="https://policies.google.com/privacy">Privacy Policy</a> and
+        <a href="https://policies.google.com/terms">Terms of Service</a> apply.
     </div>
 </div>
 {% endblock body %}
