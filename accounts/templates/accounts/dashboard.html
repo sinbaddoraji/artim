@@ -57,6 +57,7 @@
                 <i class="fas fa-venus-mars form_text my-2"></i> <strong>{{user.userprofile.gender.title}}</strong><br />
                 <i class="fas fa-map-marker-alt form_text my-2"></i> <strong>{{user.userprofile.city.title}}, UK</strong>
                 <h5><i class="fas fa-pound-sign form_text my-2"></i><strong>{{user.userprofile.price}} Flat rate</strong></h5>
+                <h5><i class="fas fa-pound-sign form_text my-2"></i><strong>Balance: {{user.userprofile.balance}}</strong></h5>
                 <div class="star my-2">
                     {% if user.userprofile.get_rating >= 1 %}
                     <i class="fas fa-star"></i>
@@ -112,7 +113,7 @@
             <i class="far fa-calendar-alt form_text my-2"></i> <strong>{{user.userprofile.age}} years old</strong><br />
             <i class="fas fa-venus-mars form_text my-2"></i> <strong>{{user.userprofile.gender.title}}</strong><br />
             <i class="fas fa-map-marker-alt form_text my-2"></i> <strong>{{user.userprofile.city.title}}, UK</strong>
-        
+            <h5><i class="fas fa-pound-sign form_text my-2"></i><strong>Balance: {{user.userprofile.balance}}</strong></h5>
             {% endif %}
         {% endif %}
     </div>
@@ -179,8 +180,18 @@
                 <h4 class="form_text">You are yet to receive a request from a customer. Please check back</h4>
             </div>
             {% else %}
+                <div class="d-flex justify-content-between">
+                    <div class="text-center my-3">
+                        <h1><span class="badge bg-success"><i class="fas fa-university"></i> £{{artisan_total}}</span></h1>
+                    </div>
+                    <div style="font-weight: 600; font-size: larger;" class="text-end">
+                        <img src="http://openweathermap.org/img/wn/{{weather.icon}}@2x.png" width="50px" height="auto"><br />
+                        {{weather.temperature}} &#176;C<br />
+                        {{weather.description.title}}<br />
+                    </div>
+                </div>
                 <div class="text-center my-3">
-                    <h4 class="form_text">Your requests from customers</h4>
+                    <h4 class="form_text">Request History</h4>
                 </div>
                 {% for order in artisan_orders reversed%}
                     {% if order.order_accepted %}
@@ -190,7 +201,7 @@
                                 {% if order.order_completed %}    
                                     <div class="accepted_text"><span class="badge bg-success"><strong style="font-size: larger;">COMPLETED</strong></span></div>
                                 {% else %}
-                                    <div class="accepted_text"><strong>ACCEPTED</strong></div>
+                                    <div class="accepted_text"><strong>YOU ACCEPTED</strong></div>
                                 {% endif %}
                             </div>
                             <h5><i class="fas fa-tools form_text"></i> {{order.service.title}} at <i class="fas fa-pound-sign form_text"></i><span style="color: black;">{{order.order_price}} Flat rate</span></h5>
@@ -208,6 +219,12 @@
                             {% if order.order_completed %}    
                             <span class="accepted_text" style="font-weight: 700;">{{order.customerorder.user.first_name.title}} has marked this request as completed, your funds have been deposited to your account.</span>
                             {% else %}
+                            <div class="d-flex justify-content-between distance_div p-1">
+                                <div style="font-size: 1.2rem;"><span class="blue" style="font-size: 1.3rem;"><strong>{{order.total_distance}}</span> miles</strong></div>
+                                <div style="font-size: 1.2rem;"><strong><i class="fas fa-car blue"></i> {{order.driving_time}}</strong></div>
+                                <div style="font-size: 1.2rem;"><strong><i class="fas fa-biking blue"></i> {{order.bicycle_time}}</strong></div>
+                                <div style="font-size: 1.2rem;"><strong><i class="fas fa-walking blue"></i> {{order.walking_time}}</strong></div>
+                            </div>
                             <span class="accepted_text" style="font-weight: 700;">Thank you for accepting this request, you must call {{order.customerorder.user.first_name.title}} within the next 24 hours.</span>
                             {% endif %}
                             
@@ -215,9 +232,8 @@
                     {% elif order.order_rejected %}
                         <div class="rejected">
                             <div class="d-flex justify-content-between">
-                                    <div class=""><a style="text-decoration: none;" class="form_text" href="{% url 'user-detail' user_type=order.artisanorder.user_type slug=order.artisanorder.user.username %}"><i class="fas fa-user-tag form_text my-2"></i> <strong>{{order.artisanorder.user.username}}</strong></a></div>
-                                 
-                                <div class="rejected_text"><strong>REJECTED</strong></div>
+                                <div class=""><a style="text-decoration: none;" class="form_text" href="{% url 'user-detail' user_type=order.artisanorder.user_type slug=order.artisanorder.user.username %}"><i class="fas fa-user-tag form_text my-2"></i> <strong>{{order.artisanorder.user.username}}</strong></a></div>
+                            <div class="rejected_text"><strong>YOU REJECTED</strong></div>
                             </div>
                             <h5><i class="fas fa-tools form_text"></i> {{order.service.title}} at <i class="fas fa-pound-sign form_text"></i><span style="color: black;">{{order.order_price}} Flat rate</span></h5>
                             <div style="font-weight: 600; font-style: italic; font-size: large;">
@@ -234,6 +250,15 @@
                             <h5><i class="fas fa-tools form_text"></i> {{order.service.title}} at <i class="fas fa-pound-sign form_text"></i><span style="color: black;">{{order.order_price}} Flat rate</span></h5>
                             <div style="font-weight: 600; font-style: italic; font-size: large;">
                                 <i class="fas fa-pen-square form_text"></i> {{order.message}}
+                            </div>
+                            <div class="">
+                                <i class="fas fa-map-marker-alt form_text my-2"></i> <strong>{{order.customerorder.city.title}}, UK</strong>
+                            </div>
+                            <div class="d-flex justify-content-between distance_div p-1">
+                                <div style="font-size: 1.2rem;"><span class="blue" style="font-size: 1.3rem;"><strong>{{order.total_distance}}</span> miles</strong></div>
+                                <div style="font-size: 1.2rem;"><strong><i class="fas fa-car blue"></i> {{order.driving_time}}</strong></div>
+                                <div style="font-size: 1.2rem;"><strong><i class="fas fa-biking blue"></i> {{order.bicycle_time}}</strong></div>
+                                <div style="font-size: 1.2rem;"><strong><i class="fas fa-walking blue"></i> {{order.walking_time}}</strong></div>
                             </div>
                             <div class="row my-2">
                                 <div class="col-md-6 d-grid gap-2">
@@ -316,4 +341,14 @@
     </div>
 </div>
 <br>
+<!-- <style>
+    .distance_div{
+    border: 0.5px solid  #1d79ca;
+    border-radius: 3px;
+    padding: 3px;
+    }
+    .trip_div{
+        background-color: #1d79ca;
+    }
+</style> -->
 {% endblock body %}
