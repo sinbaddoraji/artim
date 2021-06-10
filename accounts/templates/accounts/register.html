@@ -66,10 +66,17 @@
     var radio1 = document.getElementById("user_type_0");
     var radio2 = document.getElementById("user_type_1");
 
+    var labels = document.getElementsByClassName("form-label");
+    var label_length = labels.length;
+
+    var label = labels[label_length - 1];
+
     if (radio1.checked == false & radio2.checked == false)
     {
         services.style.display = "none";
         price.style.display = "none";
+        label.innerHTML = "";
+        radio1.checked = true;
     }
 
     function toggler() {
@@ -77,12 +84,14 @@
             selected = radio1.value;
             services.style.display = "none";
             price.style.display = "none";
+            label.innerHTML = "";
             services.removeAttribute("required")
             price.removeAttribute("required")
         } else if(radio2.checked) {
             selected = radio2.value;
             services.style.display = "block";
             price.style.display = "block";
+            label.innerHTML = "Flat Rate";
             services.setAttribute("required", "true")
             price.setAttribute("required", "true")
         }

@@ -119,11 +119,10 @@ class UserProfileForm(forms.ModelForm):
     photo = forms.ImageField(label='Profile picture', required=False)
     services = forms.MultipleChoiceField(label='', choices=SKILLS, help_text='', widget=forms.SelectMultiple(attrs={'id':'services'}), required=False)
     phone_number = forms.CharField()
-    price = forms.DecimalField(label='Price per hour', required=False)
-
+    price = forms.DecimalField(label='Flat Rate', required=False)
     class Meta:
         model = UserProfile
-        exclude = ['user', 'payment_details', 'bank_details', 'slug', 'artisan_approved', 'blocked']
+        exclude = ['user', 'payment_details', 'bank_details', 'slug', 'artisan_approved', 'blocked', 'balance']
         widgets = {
             'phone_number': forms.TextInput(attrs={'id':'phone_number', 'maxlength':11, 'onkeypress':'return (event.charCode !==8 && event.charCode ===0 || (event.charCode >= 48 && event.charCode <= 57))'}),
         }
