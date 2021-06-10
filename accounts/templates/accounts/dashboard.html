@@ -120,7 +120,7 @@
     <div class="col-8">
     {% if user.is_staff %}
         
-        {% if artisan.count > 0 %}
+        {% if artisans.count > 0 %}
         <h4>There are <span class="form_text">{{artisans.count}}</span> Artisans waiting for approval</h4>
         
         {% for artisan in artisans %}
