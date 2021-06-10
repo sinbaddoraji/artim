@@ -13,7 +13,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
 from django.views.generic.edit import FormMixin
 from .models import UserProfile
-from order.models import UserOrder
+from order.models import UserOrder, Withdrawal
 from django.core.mail import send_mail
 from order.forms import AddFundsForm
 import requests
@@ -323,4 +323,16 @@ class AdminDeleteUserView(LoginRequiredMixin, UserPassesTestMixin, SuccessMessag
     def test_func(self):
         if self.request.user.is_staff:
             return self.request.user.is_staff
+
+class WithdrawListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
+    template_name = 'accounts/withdrawal_history.html'
+    context_object_name = 'withdrawals'
+
+    def get_queryset(self):
+        queryset = Withdrawal.objects.filter(artisanwithdrawal=self.request.user.userprofile).order_by('-pk')
+        return queryset
+
+    def test_func(self):
+        if self.request.user.userprofile.user_type == 'artisan':
+            return self.request.user.userprofile
 

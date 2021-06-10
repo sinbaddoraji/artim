@@ -168,9 +168,17 @@
     var bank_confirm_password = document.getElementById("bank_confirm_password");
     var bitcoin_confirm_password = document.getElementById("bitcoin_confirm_password");
     var bitcoin_conversion = document.getElementById("bitcoin_conversion");
+    var wallet = document.getElementById("wallet");
+    
     var btc_value = document.getElementById("btc_value").value
 
-    if (bitcoin_button.checked == false & bank_button.checked == false){
+    if (bitcoin_button.checked){
+        bitcoin_form.style.display = "block";
+        bank_form.style.display = "none";
+    } else if(bank_button.checked){
+        bank_form.style.display = "block";
+        bitcoin_form.style.display = "none";
+    } else {
         bitcoin_form.style.display = "none";
         bank_form.style.display = "none";
     }
@@ -184,6 +192,7 @@
         if (bank_button.checked) {
             bitcoin_form.style.display = "none";
             bank_form.style.display = "block"
+            wallet.removeAttribute("required")
             bitcoin_amount.removeAttribute("required")
             bitcoin_confirm_password.removeAttribute("required")
             bank_amount.setAttribute("required", "true")
@@ -193,6 +202,7 @@
             bank_form.style.display = "none"
             bank_amount.removeAttribute("required")
             bank_confirm_password.removeAttribute("required")
+            wallet.setAttribute("required", "true")
             bitcoin_amount.setAttribute("required", "true")
             bitcoin_confirm_password.setAttribute("required", "true")
         }

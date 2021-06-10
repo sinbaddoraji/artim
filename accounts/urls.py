@@ -19,5 +19,6 @@ urlpatterns = [
     path('admin/manageartisans/', views.ManageArtisansView.as_view(), name='manage_artisans'),
     path('admin/managecustomers/', views.ManageCustomersView.as_view(), name='manage_customers'),
     path('admindeleteuser/<slug:slug>/', views.AdminDeleteUserView.as_view(), name='admin_deleteaccount'),
-    path('social/completeprofile/', views.CompleteProfile.as_view(), name='social_complete_profile')
+    path('social/completeprofile/', views.CompleteProfile.as_view(), name='social_complete_profile'),
+    path('withdrawals/', views.WithdrawListView.as_view(), name='withdrawal_list_view')
 ]

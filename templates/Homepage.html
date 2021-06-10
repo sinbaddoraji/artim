@@ -101,6 +101,8 @@
                                         {% else %}
                                             <li><a class="dropdown-item" href="{% url 'accounts:updateprofile' slug=user.userprofile.slug %}">
                                                 <i class="fas fa-sliders-h"></i> Edit Profile</a></li>
+                                            <li><a class="dropdown-item" href="{% url 'accounts:withdrawal_list_view'%}">
+                                                <i class="far fa-share-square"></i> My Withdrawals</a></li>
                                             {% if user.userprofile.bank_details%}
                                                 <li><a class="dropdown-item" href="#"><i class="fas fa-university"></i> Edit Bank details</a></li>
                                             {% endif %}
