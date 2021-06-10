@@ -30,3 +30,9 @@ class UserOrder(models.Model):
     def rejected(self):
         self.order_rejected = True
         self.save()
+
+class Withdrawal(models.Model):
+    artisanwithdrawal = models.ForeignKey(UserProfile, related_name='artisanwithdrawal', on_delete=models.CASCADE)
+    withdrawal_date = models.DateTimeField(auto_now_add=True)
+    amount = models.DecimalField(decimal_places=2, max_digits=10)
+    method = models.CharField(max_length=20)

@@ -23,6 +23,7 @@ class UserProfile(models.Model):
     artisan_approved = models.BooleanField(default=False)
     blocked = models.BooleanField(default=False)
     price = models.DecimalField(decimal_places=2, max_digits=10, blank=True, null=True)
+    balance = models.DecimalField(decimal_places=2, max_digits=10, default=0)
 
     def save(self, force_insert=False, force_update=False, using=None, update_fields=None):
         self.slug = slugify(self.user.username)

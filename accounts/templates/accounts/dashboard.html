@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load django_bootstrap5 %}
 {% load static %}
+{% load humanize %}
 {% load accounts_tag %}
 {% block title %}
     Your Dashboard
@@ -175,13 +176,17 @@
                 </div>
             {% else %}
             {% if artisan_orders.count < 1 %}
-            <div class="text-center my-5">
-                <h4 class="form_text">You are yet to receive a request from a customer. Please check back</h4>
-            </div>
-            {% else %}
                 <div class="d-flex justify-content-between">
-                    <div class="text-center my-3">
-                        <h1><span class="badge bg-success"><i class="fas fa-university"></i> £{{artisan_total}}</span></h1>
+                    <div class="text-center">
+                        <span style="font-size: xx-large;" class="badge blue_background"><i class="fas fa-university"></i> £{% if user.userprofile.balance == 0 %}0{% else %}{{user.userprofile.balance|intcomma}}{% endif %}</span>
+                        <div class="d-flex justify-content-around">
+                            {% if user.userprofile.balance < 5 %}
+                                <div style="font-size: x-large;"><i class="far fa-share-square diabled_blue" data-bs-toggle="tooltip" data-bs-placement="bottom" title="You need to have atleast £5"></i></div>
+                            {% else %}
+                                <div style="font-size: x-large;"><a href="{% url 'orders:withdraw_funds' %}"><i class="far fa-share-square blue" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Withdraw funds"></i></a></div>
+                            {% endif %}
+                                
+                        </div>
                     </div>
                     <div style="font-weight: 600; font-size: larger;" class="text-end">
                         <img src="http://openweathermap.org/img/wn/{{weather.icon}}@2x.png" width="50px" height="auto"><br />
@@ -189,7 +194,29 @@
                         {{weather.description.title}}<br />
                     </div>
                 </div>
-                <div class="text-center my-3">
+                <div class="text-center my-5">
+                    <h4 class="form_text">You are yet to receive a request from a customer. Please check back</h4>
+                </div>
+            {% else %}
+                <div class="d-flex justify-content-between">
+                    <div class="text-center">
+                        <span style="font-size: xx-large;" class="badge blue_background"><i class="fas fa-university"></i> £{% if user.userprofile.balance == 0 %}0{% else %}{{user.userprofile.balance|intcomma}}{% endif %}</span>
+                        <div class="d-flex justify-content-around">
+                            {% if user.userprofile.balance < 5 %}
+                                <div style="font-size: x-large;"><i class="far fa-share-square diabled_blue" data-bs-toggle="tooltip" data-bs-placement="bottom" title="You need to have atleast £5"></i></div>
+                            {% else %}
+                                <div style="font-size: x-large;"><a href="{% url 'orders:withdraw_funds' %}"><i class="far fa-share-square blue" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Withdraw funds"></i></a></div>
+                            {% endif %}
+                                
+                        </div>
+                    </div>
+                    <div style="font-weight: 600; font-size: larger;" class="text-end">
+                        <img src="http://openweathermap.org/img/wn/{{weather.icon}}@2x.png" width="50px" height="auto"><br />
+                        {{weather.temperature}} &#176;C<br />
+                        {{weather.description.title}}<br />
+                    </div>
+                </div>
+                <div class="text-center">
                     <h4 class="form_text">Request History</h4>
                 </div>
                 {% for order in artisan_orders reversed%}
@@ -275,11 +302,80 @@
             
         {% else %}
             {% if customer_orders.count < 1 %}
-            <div class="text-center my-5">
-                <h4 class="form_text">You are yet to request an Artisan's service.</h4>
-                <a href="{% url 'index' slug="home" %}"><button class="btn btn-outline-primary">BROWSE ARTISANS</button></a>
-            </div>
+                <div class="d-flex justify-content-end">
+                    <div class="text-center">
+                        <span style="font-size: xx-large;" class="badge blue_background"><i class="fas fa-university"></i> £{% if user.userprofile.balance == 0 %}0{% else %}{{user.userprofile.balance|intcomma}}{% endif %}</span>
+                        <div class="d-flex justify-content-around">
+                            <div style="font-size: x-large;"><a href="#" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fas fa-plus blue" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Add funds to your account."></i></a></div>
+                            {% if user.userprofile.balance < 5 %}
+                                <div style="font-size: x-large;"><i class="far fa-share-square diabled_blue" data-bs-toggle="tooltip" data-bs-placement="bottom" title="You need to have atleast £5"></i></div>
+                            {% else %}
+                                <div style="font-size: x-large;"><a href="#"><i class="far fa-share-square blue" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Withdraw funds"></i></a></div>
+                            {% endif %}
+                                
+                        </div>
+                    </div>
+                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Add funds to your Artim account</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <form method="post">
+                            <div class="modal-body">
+                                {% csrf_token %}
+                                {% bootstrap_form form layout="floating" %}
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-primary"><strong><i class="fas fa-plus"></i> ADD FUNDS</strong></button>
+                            </div>
+                            </form>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center my-5">
+                    <h4 class="form_text">You are yet to place an order.</h4>
+                    <a href="{% url 'index' slug="home" %}"><button class="btn btn-outline-primary">BROWSE ARTISANS</button></a>
+                </div>
             {% else %}
+                <div class="d-flex justify-content-end">
+                    <div class="text-center">
+                        <span style="font-size: xx-large;" class="badge blue_background"><i class="fas fa-university"></i> £{% if user.userprofile.balance == 0 %}0{% else %}{{user.userprofile.balance|intcomma}}{% endif %}</span>
+                        <div class="d-flex justify-content-around">
+                            <div style="font-size: x-large;"><a href="#" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fas fa-plus blue" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Add funds to your account."></i></a></div>
+                            {% if user.userprofile.balance < 5 %}
+                                <div style="font-size: x-large;"><i class="far fa-share-square diabled_blue" data-bs-toggle="tooltip" data-bs-placement="bottom" title="You need to have atleast £5"></i></div>
+                            {% else %}
+                                <div style="font-size: x-large;"><a href="#"><i class="far fa-share-square blue" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Withdraw funds"></i></a></div>
+                            {% endif %}
+                                
+                        </div>
+                    </div>
+                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="exampleModalLabel">Add funds to your Artim account</h5>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <form method="post">
+                            <div class="modal-body">
+                                {% csrf_token %}
+                                {% bootstrap_form form layout="floating" %}
+                            </div>
+                            <div class="modal-footer">
+                                <button class="btn btn-primary"><strong><i class="fas fa-plus"></i> ADD FUNDS</strong></button>
+                            </div>
+                            </form>
+                          </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <h4 class="form_text">Your Orders</h4>
+                </div>
                 {% for order in customer_orders reversed%}
                     {% if order.order_accepted %}
                         <div class="accepted">
@@ -303,7 +399,7 @@
                             {% if not order.order_completed %}
                             <a href="{% url 'orders:accept_or_reject' action="completed" order=order.pk %}" style="text-decoration: none;">
                                 <div class="d-grid gap-2 my-2">
-                                    <button class="btn btn-success"><strong><i class="fas fa-check-double"></i> MARK AS COMPLETED</strong></button>
+                                    <button class="btn btn-success"><strong><i class="fas fa-check-double"></i> MARK THIS ORDER AS COMPLETE</strong></button>
                                 </div></a>
                             {% endif %}
                         </div>
@@ -340,14 +436,19 @@
     </div>
 </div>
 <br>
-<!-- <style>
-    .distance_div{
-    border: 0.5px solid  #1d79ca;
-    border-radius: 3px;
-    padding: 3px;
-    }
-    .trip_div{
+
+<style>
+    .blue_background{
         background-color: #1d79ca;
     }
-</style> -->
+    .diabled_blue {
+        color: #889ba3;
+    }
+</style>
+<script>
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+    return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+</script>
 {% endblock body %}

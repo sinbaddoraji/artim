@@ -8,6 +8,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+
+
+    <link href="https://fonts.googleapis.com/css?family=Nunito+Sans:300i,400,700&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
     <link rel="stylesheet" href="{% static "/css/master.css" %}">
     <title>
@@ -29,6 +33,22 @@
         datalist#fixed {
             -webkit-appearance: none;
         }
+      .bg-custom{
+        background-color:#130f4083;
+      }
+      .button-fixed{
+        bottom: 0;
+        position: fixed;
+        right: 0;
+        border-radius: 4px;
+      }
+      .fas{
+        cursor: pointer;
+        font-size: 24px;
+      }
+      p{
+        font-size: 14px;  
+      }
       </style>
 </head>
 <body>
@@ -177,8 +197,29 @@
             <div class="col"></div>
         </div>
     </div>
-        <br>
+    {% if cookies %}
+    <div class="row" id = "acDialog">
+        <div class="col-md-4 col-sm-12 button-fixed">
+          <div class="p-3 pb-4 bg-custom text-white">
+            <div class="row">
+              <div class="col-10">
+                <h2>Allow Cookies</h2>
+              </div>
+              <div class="col-2 text-center">
+                <i type="submit" class="fas fa-times" onclick="closeCookieDialog()"></i>
+              </div>
+            </div>
+            <p>We use cookies to improve user experience. By using this website you agree for Artim to collect these cookies
+            </p>
+            <button type="submit" class="btn btn-primary" style="width: 100%;" onclick="closeCookieDialog()">Accept Cookies</button>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+</div>
+
     </main>
+    
     <footer class="mu-3 mb-1">
         <div class="container text-center" style="color: white;">
             <strong>Copyright &copy; Artim</strong><br />
@@ -228,7 +269,12 @@
     if (n < 1) {slideIndex = images.length} ;
     document.body.style.background = `url(${images[slideIndex-1]}) no-repeat center center fixed`;
     document.body.style.backgroundSize = "cover";
-
   }
+
+    function closeCookieDialog()
+    {
+        var acDialog = document.getElementById('acDialog');
+        acDialog.style.display = "none";
+    }
   </script>
 </html>

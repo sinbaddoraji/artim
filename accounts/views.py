@@ -4,16 +4,18 @@ from .forms import UserLoginForm, UserForm, UserProfileForm
 from allauth.socialaccount.models import SocialAccount
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from django.views.generic import TemplateView, UpdateView, DeleteView, RedirectView, ListView, CreateView
+from django.views.generic import TemplateView, UpdateView, DeleteView, RedirectView, ListView, CreateView, FormView
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.contrib import messages
+from django.views.generic.edit import FormMixin
 from .models import UserProfile
 from order.models import UserOrder
 from django.core.mail import send_mail
+from order.forms import AddFundsForm
 import requests
 
 
@@ -101,21 +103,23 @@ def userlogout(request):
     return redirect('/')
 
 
-class Dashboard(LoginRequiredMixin, TemplateView):
+class Dashboard(LoginRequiredMixin, FormView):
     
     template_name = 'accounts/dashboard.html'
     weather = {}
+    form_class = AddFundsForm
 
     def get(self, request, *args, **kwargs):
-        location = self.request.user.userprofile.city
-        url = f'http://api.openweathermap.org/data/2.5/weather?q={location},%20UK&units=metric&appid=9eee9ed9d11b622b3a695c6ced4b56f2'
-        response  = requests.get(url).json()
-        self.weather = {
-            'city' : location,
-            'temperature' : round(int(response['main']['temp']), 0),
-            'description' : response['weather'][0]['description'],
-            'icon' : response['weather'][0]['icon']
-        }
+        if not self.request.user.is_staff:
+            location = self.request.user.userprofile.city
+            url = f'http://api.openweathermap.org/data/2.5/weather?q={location},%20UK&units=metric&appid=9eee9ed9d11b622b3a695c6ced4b56f2'
+            response  = requests.get(url).json()
+            self.weather = {
+                'city' : location,
+                'temperature' : round(int(response['main']['temp']), 0),
+                'description' : response['weather'][0]['description'],
+                'icon' : response['weather'][0]['icon']
+            }
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -139,6 +143,19 @@ class Dashboard(LoginRequiredMixin, TemplateView):
                 context['artisan_total'] = artisan_total
                 context['weather'] = self.weather
         return context
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.is_valid():
+            return self.form_valid(form)
+        else:
+            messages.error(request, 'Please input the correct amount to add.')
+            return self.form_invalid(form)
+
+    def form_valid(self, form):
+        amount = form.cleaned_data.get('amount')
+        return redirect('orders:add_funds', str(amount))
+        return super().form_valid(form)
 
     def test_func(self):
         if self.request.user.is_staff:

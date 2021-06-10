@@ -1,0 +1,201 @@
+{% extends 'base.html' %}
+{% load django_bootstrap5 %}
+{% load static %}
+{% load humanize %}
+{% load order_tags %}
+{% block title %}
+    Order service
+{% endblock title %}
+    
+
+{% block body %}
+<div class="row">
+    <div class="col-4 text-center">
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-10">
+                {% if artisan.userprofile.photo %}
+                <img src="{{MEDIA_URL}}/{{user.userprofile.photo}}" class="img-fluid img-thumbnail rounded-circle" alt="{{artisan.first_name}}"> {% else %} {% if user.userprofile.gender == "male" or user.is_staff%}
+                <img src="{% static "images/male.jpg " %}" class="img-fluid img-thumbnail rounded-circle" alt="{{artisan.first_name}}"> {% else %}
+                <img src="{% static "images/female.jpg " %}" class="img-fluid img-thumbnail rounded-circle" alt="{{artisan.first_name}}"> {% endif %} {% endif %}
+            </div>
+            <div class="col-md-1"></div>
+        </div>
+        <h5><span class="badge bg-primary">ARTISAN</span></h5>
+        <h4 class="form_text">{{user.first_name.title}} {{user.last_name.title}}</h4>
+        <span class="form_text my-1"><strong>Joined:</strong></span> <strong>{{user.date_joined}}</strong><br />
+        <i class="fas fa-user-tag form_text my-2"></i> <strong>{{user.username}}</strong><br />
+        <i class="far fa-calendar-alt form_text my-2"></i> <strong>{{user.userprofile.age}} years old</strong><br />
+        <i class="fas fa-venus-mars form_text my-2"></i> <strong>{{user.userprofile.gender.title}}</strong><br />
+        <i class="fas fa-map-marker-alt form_text my-2"></i> <strong>{{user.userprofile.city.title}}, UK</strong>
+    </div>
+    <div class="col-8 form_text">
+        {% if successfull %}
+        <br>
+        <br>
+        <br>
+        <div class="row justify-content-center">
+            <div class="col-10 col-md-8 col-lg-6 blue text-center">
+                <h1><i class="far fa-check-circle fa-3x"></i></h1>
+                <h4>Withdraw successful</h4>
+                <h5>You withdraw of <strong>£{{amount}}</strong> into your <span>{% if method == 'bitcoin' %}Bitcoin wallet{% else %}Bank acount{% endif %}</span> has been processed.</h5>
+                <a href="{% url 'accounts:dashboard' %}"><button class="btn btn-outline-primary btn-lg">GO BACK TO MY PROFILE</button></a>
+            </div>
+        </div>
+        {% else %}
+        <div class="d-flex justify-content-between mb-2">
+            <div><h5 class="blue text-center"><strong>Withdraw funds from your account</strong></h5></div>
+            <div>
+                <span style="font-size: x-large;" class="badge blue_background"><i class="fas fa-university"></i> £{% if user.userprofile.balance == 0 %}0{% else %}{{user.userprofile.balance|intcomma}}{% endif %}</span>
+            </div>
+        </div>
+        <div>
+            <div class="form-check">
+                <input class="form-check-input mt-3" type="radio" onchange="toggler()" name="flexRadioDefault" id="bank_button" {{bank_check}}>
+                <label class="form-check-label" for="flexRadioDefault2">
+                    <span style="font-size: xx-large; color: green;"><i class="fas fa-university"></i></span> <span style="font-size: x-large;">Bank Transfer</span>
+                </label>
+            </div>
+            <div id="bank_form" class="px-4">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-floating mb-3">
+                                <input type="number" class="form-control" min="5" id="bank_amount" name="amount" placeholder="Withdrawal amount">
+                                <label for="bank_amount">Amount to withdraw (Min £5)</label>
+                                <span style="color: rgb(196, 4, 4);">{{bank_amount_error}}</span>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="password" class="form-control" id="bank_confirm_password" name="password" placeholder="Enter your Artim password">
+                                <label for="bank_amount">Enter your Artim password</label>
+                                <span style="color: rgb(196, 4, 4);">{{bank_password_error}}</span>
+                            </div>
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-success btn-lg" type="submit"><strong><i class="fas fa-paper-plane"></i> WITHDRAW</strong></button>
+                            </div>
+                        </div>
+                        <div class="col">
+                        <div class="bank_div">
+                            <h5 class="text-center"><strong>Your bank details</strong></h5>
+                            <div class="row">
+                                <div class="col text-end" style="color: black;">
+                                    BANK<br />
+                                    SORT CODE<br />
+                                    ACCOUNT NO<br />
+                                </div>
+                                <div class="col" style="font-weight: 800;">
+                                    {{bank.bank}}<br />
+                                    {{bank.sort_code}}<br />
+                                    ********{{bank.account}}<br />
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                    <input type="hidden" name="method" value="bank">
+                </form>
+            </div>
+        </div>
+        <hr>
+        <div>
+            <div class="form-check" style="font-size: large;">
+                <input class="form-check-input mt-3" type="radio" onchange="toggler()" name="flexRadioDefault" id="bitcoin_button" {{bitcoin_check}}>
+                <label class="form-check-label" for="flexRadioDefault1">
+                    <span style="font-size: xx-large; color: #f7931a;"><i class="fab fa-bitcoin"></i></span> <span style="font-size: x-large;">Bitcoin</span>
+                </label>
+            </div>
+            <div id="bitcoin_form" class="px-4">
+                <form method="post">
+                    {% csrf_token %}
+                    <form method="post">
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control" id="wallet" name="wallet" placeholder="Wallet address">
+                                    <label for="bank_amount">Wallet address</label>
+                                    <span style="color: rgb(196, 4, 4);">{{wallet_error}}</span>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <input type="number" min="5" class="form-control" oninput="updateCurrency()" id="bitcoin_amount" name="amount" placeholder="Withdrawal amount">
+                                    <label for="bank_amount">Amount to withdraw (Min £5)</label>
+                                    <span style="color: rgb(196, 4, 4);">{{bitcoin_amount_error}}</span>
+                                </div>
+                                <div class="form-floating mb-3">
+                                    <input type="password" class="form-control" id="bitcoin_confirm_password" name="password" placeholder="Enter your Artim password">
+                                    <label for="bank_amount">Enter your Artim password</label>
+                                    <span style="color: rgb(196, 4, 4);">{{bitcoin_password_error}}</span>
+                                </div>
+                                <div class="d-grid gap-2">
+                                    <button class="btn btn-success btn-lg" c><strong><i class="fas fa-paper-plane"></i> WITHDRAW</strong></button>
+                                </div>
+                                <input type="hidden" id="btc_value" value="{{btc.15m}}">
+                            </div>
+                            <div class="col">
+                                <div class="bank_div">
+                                    <div class="row">
+                                        <div class="col text-end" style="color: black;">
+                                            <span style="color: #f7931a; font-weight: 700; font-size: x-large;">1 BTC</span><br />
+                                        </div>
+                                        <div class="col" style="font-weight: 800; font-size: x-large;">
+                                            £{{btc.15m}}<br />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="color: #f7931a; font-weight: 700; font-size: xx-large;" class="text-end"><span style="color: green; font-weight: 700; font-size: xx-large;" id="bitcoin_conversion">0.00000</span> BTC</div>
+                            </div>
+                        </div>
+                    <input type="hidden" name="method" value="bitcoin">
+                </form>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+<br>
+<style>
+    .blue_background{
+        background-color: #1d79ca;
+    }
+</style>
+<script>
+    var bitcoin_button = document.getElementById("bitcoin_button");
+    var bank_button = document.getElementById("bank_button");
+    var bitcoin_form = document.getElementById("bitcoin_form");
+    var bank_form = document.getElementById("bank_form");
+    var bitcoin_amount = document.getElementById("bitcoin_amount");
+    var bank_amount = document.getElementById("bank_amount");
+    var bank_confirm_password = document.getElementById("bank_confirm_password");
+    var bitcoin_confirm_password = document.getElementById("bitcoin_confirm_password");
+    var bitcoin_conversion = document.getElementById("bitcoin_conversion");
+    var btc_value = document.getElementById("btc_value").value
+
+    if (bitcoin_button.checked == false & bank_button.checked == false){
+        bitcoin_form.style.display = "none";
+        bank_form.style.display = "none";
+    }
+
+    function updateCurrency(){
+        input_amount = document.getElementById("bitcoin_amount").value
+        bitcoin_conversion.textContent = (Number(input_amount)/Number(btc_value)).toFixed(5)
+    }
+
+    function toggler() {
+        if (bank_button.checked) {
+            bitcoin_form.style.display = "none";
+            bank_form.style.display = "block"
+            bitcoin_amount.removeAttribute("required")
+            bitcoin_confirm_password.removeAttribute("required")
+            bank_amount.setAttribute("required", "true")
+            bank_confirm_password.setAttribute("required", "true")
+        } else if(bitcoin_button.checked) {
+            bitcoin_form.style.display = "block";
+            bank_form.style.display = "none"
+            bank_amount.removeAttribute("required")
+            bank_confirm_password.removeAttribute("required")
+            bitcoin_amount.setAttribute("required", "true")
+            bitcoin_confirm_password.setAttribute("required", "true")
+        }
+    }
+</script>
+{% endblock body %}

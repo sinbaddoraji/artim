@@ -55,7 +55,6 @@ INSTALLED_APPS = [
 
     'multiselectfield',
     'django.contrib.humanize',
-    
 ]
 
 SITE_ID = 1

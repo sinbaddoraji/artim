@@ -7,7 +7,7 @@
 
 {% block body %}
 <script src="https://www.google.com/recaptcha/api.js"></script>
-<script src="https://www.google.com/recaptcha/api.js?render=6Lfz7B4bAAAAABL9DZx7PPHKJT9ovKEKh81F6Tii"></script>
+<script src="https://www.google.com/recaptcha/api.js?render=6LcfPh8bAAAAACbRBFFMW05cAtZ6ybRzMSaSQKvI"></script>
 <script>
     function onSubmit(token) {
       document.getElementById("form").submit();
@@ -17,7 +17,7 @@
     function onClick(e) {
       e.preventDefault();
       grecaptcha.ready(function() {
-        grecaptcha.execute('6Lfz7B4bAAAAABL9DZx7PPHKJT9ovKEKh81F6Tii', {action: 'submit'}).then(function(token) {
+        grecaptcha.execute('6LcfPh8bAAAAACbRBFFMW05cAtZ6ybRzMSaSQKvI', {action: 'submit'}).then(function(token) {
             // Add your logic to submit to your backend server here.
         });
       });
@@ -54,7 +54,7 @@
                 </ul>
             </div>
             </form>
-            
+
         </form>
     </div>
 </div>

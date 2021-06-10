@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy
 from django.contrib import messages
 from accounts.models import SavedOrder
-from .models import UserOrder
+from .models import UserOrder, Withdrawal
 from accounts.models import SavedOrder
 from accounts.models import UserProfile
 from django.conf import settings
@@ -16,6 +16,7 @@ from django.urls import reverse
 from django.utils.crypto import get_random_string
 from django.views.decorators.csrf import csrf_exempt
 from django.core.mail import send_mail
+from django.contrib.auth.hashers import check_password
 import requests
 
 
@@ -49,6 +50,54 @@ def order_service(request, slug):
         return redirect('accounts:dashboard')
 
 
+@login_required
+def add_funds_to_account(request, amount):
+    if int(amount) > 500:
+        messages.error(request, f"You can only add at most £500 at once.")
+        return redirect('accounts:dashboard')
+    else:
+        key = get_random_string(length=10)
+        request.session['order'] = {
+            'amount': amount,
+            'key': key
+        }
+        host = request.get_host()
+        paypal_dict = {
+            'business': settings.PAYPAL_RECEIVER_EMAIL,
+            'amount': amount,
+            'item_name': 'Adding funds to account',
+            'invoice': key,
+            'currency_code': 'GBP',
+            'notify_url': f"http://{host}{reverse('orders:paypal-ipn')}",
+            'return_url': f"http://{host}{reverse('orders:added_funds', args=[amount, key])}",
+            'cancel_return': f"http://{host}{reverse('orders:payment_cancelled')}",
+        }
+        form = PayPalPaymentsForm(initial=paypal_dict)
+        if request.method == "POST":
+            UserProfile.objects.filter(user = request.user).update(balance = request.user.userprofile.balance+int(amount))
+            messages.success(request, f"Great news! £{amount} has been successfully added to your balance.")
+            return redirect('accounts:dashboard')
+    return render(request, 'take_payment.html', context={'form':form, 'addfunds':True, 'amount':amount})
+
+
+
+@csrf_exempt
+@login_required
+def addfunds_payment_completed(request, amount, key):
+    try:
+        order = request.session['order']
+        if order['key'] == key:
+            UserProfile.objects.filter(user = request.user).update(balance = request.user.userprofile.balance+int(amount))
+            messages.success(request, f"Great news! £{amount} has been successfully added to your balance.")
+            return redirect('accounts:dashboard')
+        else:
+            messages.error(request, f"Don't act smart, next time you will be blocked.")
+            return redirect('accounts:dashboard')
+    except KeyError:
+        return redirect('accounts:dashboard')
+
+
+@login_required
 def payment_page(request):
     order = request.session['order']
     host = request.get_host()
@@ -70,7 +119,45 @@ def payment_page(request):
     return render(request, 'take_payment.html', context={'form':form, 'price':order['price'], 'artisan':artisan})
 
 
+@login_required
+def payment_completed_with_funds(request):
+    try:
+        order = request.session["order"]
+        if request.user.userprofile.balance > float(order["price"]):
+            artisan = get_object_or_404(User, username=order["artisan"])
+            destination = request.user.userprofile.city
+            origin = artisan.userprofile.city
+            response_driving = requests.post(
+                f'https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins="{origin}, UK"&destinations="{destination} UK"&key=AIzaSyDpWjr69HcxTnG5OirZmvl6qvtg2NMpYCM&units=imperial&mode=driving'
+                )
+            response_bicycle = requests.post(
+                f'https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins="{origin}, UK"&destinations="{destination} UK"&key=AIzaSyDpWjr69HcxTnG5OirZmvl6qvtg2NMpYCM&units=imperial&mode=bicycling'
+                )
+            response_walking = requests.post(
+                f'https://maps.googleapis.com/maps/api/distancematrix/json?units=metric&origins="{origin}, UK"&destinations="{destination} UK"&key=AIzaSyDpWjr69HcxTnG5OirZmvl6qvtg2NMpYCM&units=imperial&mode=walking'
+                )
+            UserOrder.objects.create(
+                            customerorder = request.user.userprofile,
+                            artisanorder = artisan.userprofile,
+                            service = order["service"],
+                            message = order["message"],
+                            order_price = order["price"],
+                            total_distance = round(response_driving.json()['rows'][0]['elements'][0]['distance']['value']/1000*0.621371, 1),
+                            walking_time = response_walking.json()['rows'][0]['elements'][0]['duration']['text'],
+                            driving_time = response_driving.json()['rows'][0]['elements'][0]['duration']['text'],
+                            bicycle_time = response_bicycle.json()['rows'][0]['elements'][0]['duration']['text']
+                        )
+            UserProfile.objects.filter(user = request.user).update(balance = request.user.userprofile.balance - int(float(order["price"])))
+            del request.session["order"]
+        else:
+            return redirect('accounts:dashboard')
+    except KeyError:
+        return redirect('accounts:dashboard')
+    return render(request, 'payment_completed.html')
+
+
 @csrf_exempt
+@login_required
 def payment_completed(request):
     try:
         order = request.session["order"]
@@ -118,6 +205,7 @@ def accept_or_reject_request(request, order, action):
     if action == "completed":
         if request.user.userprofile.user_type == "customer":
             order = UserOrder.objects.get(pk=order)
+            UserProfile.objects.filter(user = order.artisanorder).update(balance = order.artisanorder.balance+order.order_price)
             order.completed()
             try:
                 send_mail(
@@ -152,7 +240,7 @@ def accept_or_reject_request(request, order, action):
             elif action == "reject":
                 order = UserOrder.objects.get(pk=order)
                 order.rejected()
-                
+                UserProfile.objects.filter(user = order.customerorder).update(balance = order.customerorder.balance+order.order_price)
                 try:
                     send_mail(
                     f'Your order request for {order.service} has been rejected',
@@ -162,10 +250,77 @@ def accept_or_reject_request(request, order, action):
                 )
                 except:
                     pass
-                
                 messages.error(request, f"The customer has been notified of the decline")
                 return redirect('accounts:dashboard')
         else:
             messages.error(request, f"You can't access that page, If you attempt that again you might be blocked.")
             return redirect('accounts:dashboard')
 
+
+def withdraw_funds(request):
+    if request.user.userprofile.balance < 5:
+        return redirect('accounts:dashboard')
+    else:
+        bank_info = request.user.userprofile.bank_details[2:-2].split(", ")
+        bank = {
+            'bank': bank_info[0],
+            'sort_code': f'{bank_info[1][:2]}-{bank_info[1][2:4]}-{bank_info[1][4:]}',
+            'account': bank_info[2][-2:]
+        }
+        url = 'https://blockchain.info/ticker'
+        bitcoin_price = requests.get(url).json()['GBP']
+        if request.method == 'POST':
+            withdraw_method = request.POST.get("method")
+            amount = request.POST.get("amount")
+            password = request.POST.get("password")
+            if not check_password(password, request.user.password):
+                if withdraw_method == 'bank':
+                    return render(
+                        request, 'withdraw_funds.html', 
+                        context={
+                            'bank':bank, 
+                            'btc':bitcoin_price, 
+                            'bank_password_error': 'You entered a wrong password',
+                            'bank_check': 'checked'
+                            }
+                        )
+                else:
+                    return render(
+                        request, 'withdraw_funds.html', 
+                        context={
+                            'bank':bank, 
+                            'btc':bitcoin_price, 
+                            'bitcoin_password_error': 'You entered a wrong password',
+                            'bitcoin_check': 'checked'
+                            }
+                        )
+            elif int(amount) > request.user.userprofile.balance:
+                if withdraw_method == 'bank':
+                    return render(
+                        request, 'withdraw_funds.html', 
+                        context={
+                            'bank':bank, 
+                            'btc':bitcoin_price, 
+                            'bank_amount_error': "You can't withdraw an amount more than your balance",
+                            'bank_check': 'checked'
+                            }
+                        )
+                else:
+                    return render(
+                        request, 'withdraw_funds.html', 
+                        context={
+                            'bank':bank, 
+                            'btc':bitcoin_price, 
+                            'bitcoin_amount_error': "You can't withdraw an amount more than your balance",
+                            'bitcoin_check': 'checked'
+                            }
+                        )
+            else:
+                UserProfile.objects.filter(user = request.user).update(balance = request.user.userprofile.balance - int(amount))
+                Withdrawal.objects.create(
+                    artisanwithdrawal = request.user.userprofile,
+                    amount = amount,
+                    method = withdraw_method
+                )
+                return render(request, 'withdraw_funds.html', context={'successfull':True, 'method':withdraw_method, 'amount':amount}) 
+        return render(request, 'withdraw_funds.html', context={'bank':bank, 'btc':bitcoin_price})

@@ -24,7 +24,16 @@ def homepage(request):
                 return redirect(f'/{searched}/')
             else:
                 return redirect(f'/{searched}/check/{response[0]}/')
-    return render(request, 'homepage.html', context={'jobs':jobs, 'popular':random.sample(jobs, 6)})
+            
+    cookies = False
+    
+    if 'cookies' in request.session:
+        pass
+    else:
+        cookies = True
+        request.session['cookies'] = False
+        
+    return render(request, 'homepage.html', context={'jobs':jobs, 'popular':random.sample(jobs, 6), 'cookies' : cookies })
 
 
 class ArtisanListView(ListView):
