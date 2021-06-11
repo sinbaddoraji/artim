@@ -56,6 +56,7 @@
             <i class="fas fa-user-tag form_text my-2"></i> <strong>{{object.user.username}}</strong><br />
             <i class="far fa-calendar-alt form_text my-2"></i> <strong>{{object.age}} years old</strong><br />
             <i class="fas fa-venus-mars form_text my-2"></i> <strong>{{object.gender.title}}</strong><br />
+            <i class="far fa-phone form_text my-2"></i> <strong>{{object.user.userprofile.phone_number}}</strong><br />
             <i class="fas fa-map-marker-alt form_text my-2"></i> <strong>{{object.city.title}}, UK</strong>
             <h5><i class="fas fa-pound-sign form_text mt-2"></i><strong>{{object.price}}/hr</strong></h5>
             {% if object.get_total_reviews >= 1 %}
@@ -117,6 +118,7 @@
                 <i class="fas fa-user-tag form_text my-2"></i> <strong>{{object.user.username}}</strong><br />
                 <i class="far fa-calendar-alt form_text my-2"></i> <strong>{{object.user.userprofile.age}} years old</strong><br />
                 <i class="fas fa-venus-mars form_text my-2"></i> <strong>{{object.gender.title}}</strong><br />
+                <i class="far fa-phone form_text my-2"></i> <strong>{{object.user.userprofile.phone_number}}</strong><br />
                 <i class="fas fa-map-marker-alt form_text my-2"></i> <strong>{{object.city.title}}, UK</strong>
             {% endif %}
         {% endif %}
