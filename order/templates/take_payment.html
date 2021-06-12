@@ -10,7 +10,26 @@
 
 {% block body %}
 {% if addfunds %}
-
+<div class="row">
+    <div class="col-4 text-center">
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-10">
+                {% if user.userprofile.photo %}
+                <img src="{{MEDIA_URL}}/{{user.userprofile.photo}}" class="img-fluid img-thumbnail rounded-circle" alt="{{artisan.first_name}}"> {% else %} {% if user.userprofile.gender == "male" or user.is_staff%}
+                <img src="{% static "images/male.jpg " %}" class="img-fluid img-thumbnail rounded-circle" alt="{{artisan.first_name}}"> {% else %}
+                <img src="{% static "images/female.jpg " %}" class="img-fluid img-thumbnail rounded-circle" alt="{{artisan.first_name}}"> {% endif %} {% endif %}
+            </div>
+            <div class="col-md-1"></div>
+        </div>
+        <h5><span class="badge bg-info">CUSTOMER</span></h5>
+        <h4 class="form_text">{{user.first_name.title}} {{user.last_name.title}}</h4>
+        <span class="form_text my-1"><strong>Joined:</strong></span> <strong>{{user.date_joined}}</strong><br />
+        <i class="fas fa-user-tag form_text my-2"></i> <strong>{{user.username}}</strong><br />
+        <i class="far fa-calendar-alt form_text my-2"></i> <strong>{{user.userprofile.age}} years old</strong><br />
+        <i class="fas fa-venus-mars form_text my-2"></i> <strong>{{user.userprofile.gender.title}}</strong><br />
+        <i class="fas fa-map-marker-alt form_text my-2"></i> <strong>{{user.userprofile.city.title}}, UK</strong>
+    </div>
 {% else %}
 <div class="row">
     <div class="col-4 text-center">
@@ -30,11 +49,10 @@
         <i class="fas fa-user-tag form_text my-2"></i> <strong>{{artisan.username}}</strong><br />
         <i class="far fa-calendar-alt form_text my-2"></i> <strong>{{artisan.userprofile.age}} years old</strong><br />
         <i class="fas fa-venus-mars form_text my-2"></i> <strong>{{artisan.userprofile.gender.title}}</strong><br />
-        <i class="far fa-phone form_text my-2"></i> <strong>{{artisan.userprofile.phone_number.title}}</strong><br />
         <i class="fas fa-map-marker-alt form_text my-2"></i> <strong>{{artisan.userprofile.city.title}}, UK</strong>
     </div>
-    {% endif %}
-    <div {% if addfunds %} class="row justify-content-center" {% else %} class="col-8 form_text"{% endif %}>
+{% endif %}
+    <div class="col-8 form_text">
         {% if addfunds %}
             <h5 class="blue text-center"><strong>Add £{{amount}} to your account</strong></h5>
             <form method="post" onsubmit="return validateForm()">
