@@ -17,6 +17,10 @@ from django.utils.crypto import get_random_string
 from django.views.decorators.csrf import csrf_exempt
 from django.core.mail import send_mail
 from django.contrib.auth.hashers import check_password
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
+import random
 import requests
 
 
@@ -324,3 +328,12 @@ def withdraw_funds(request):
                 )
                 return render(request, 'withdraw_funds.html', context={'successfull':True, 'method':withdraw_method, 'amount':amount}) 
         return render(request, 'withdraw_funds.html', context={'bank':bank, 'btc':bitcoin_price})
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def getBitcoinAddress(request):
+    response = requests.get('https://block.io//api/v2/get_my_addresses/?api_key=bb4d-1544-8e7b-5458').json()
+    bitcoin_price = requests.get('https://blockchain.info/ticker').json()['GBP']
+    addresses = response['data']['addresses']
+    return Response({'price':bitcoin_price['15m'], 'wallet':addresses[random.randint(0, len(response['data']['addresses'])-1)]['address']})

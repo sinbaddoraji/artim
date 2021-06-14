@@ -54,7 +54,41 @@
 {% endif %}
     <div class="col-8 form_text">
         {% if addfunds %}
-            <h5 class="blue text-center"><strong>Add £{{amount}} to your account</strong></h5>
+            <div class="d-flex justify-content-between mb-2">
+                <div><h5 class="blue text-center"><strong>Add £{{amount}} to your account</strong></h5></div>
+                <input type="hidden" id="hidden_amount" value="{{amount}}">
+                <div>
+                    <button type="button" id="btc_button" class="btn btn-dark" onclick="getBtcAddress()">
+                        <div id="spinning">
+                            <i class="fab fa-bitcoin" style="font-size: 1.5rem;"></i> <span style="font-size: large; font-weight: bold;" class="mb-3"> Add with bitcoin</span> 
+                            <span class="spinner-border text-light" id="spinner" style="width: 1.5rem; height: 1.5rem;" role="status" aria-hidden="true"></span>
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <div id="not_spinning">
+                            <i class="fab fa-bitcoin" style="font-size: 1.5rem;"></i> <span style="font-size: large; font-weight: bold;" class="mb-3"> Fund with bitcoin</span> 
+                        </div>
+                    </button>
+                </div>
+            </div>
+            <div class="hidden">
+                <button type="button" id="hidden" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    Wallet
+                </button>
+            </div>
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel"></h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      Wallet: <strong><span id="btc_address" style="color: black;"></span></strong><br />
+                      Amount to pay: <strong><span id="btc_amount"></span>BTC</strong>
+                    </div>
+                  </div>
+                </div>
+              </div>
             <form method="post" onsubmit="return validateForm()">
                 {% csrf_token %}
                 <div class="mb-3">
@@ -101,7 +135,7 @@
         {% else %}
             <div class="d-flex justify-content-between mb-2">
                 <div><h5 class="blue text-center"><strong>Make payment by Credit Card or PayPal</strong></h5></div>
-                <div><button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"><span style="font-size: large; font-weight: bold;">Check our with your balance £{{user.userprofile.balance|intcomma}}</span></button></div>
+                <div><button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"><span style="font-size: large; font-weight: bold;">Check out with your balance £{{user.userprofile.balance|intcomma}}</span></button></div>
             </div>
             <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
@@ -170,8 +204,40 @@
     .blue_background{
         background-color: #1d79ca;
     }
+    .hidden{
+        display: none;
+    }
+    #spinning{
+        display: none;
+    }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
 <script>
+var spinning = document.getElementById("spinning")
+var notSpinning = document.getElementById("not_spinning")
+var modalButton = document.getElementById("hidden")
+var btc_button = document.getElementById("btc_button")
+var btc_address = document.getElementById("btc_address")
+var btc_amount = document.getElementById("btc_amount")
+
+const getBtcAddress = async () => {
+    try{
+        notSpinning.style.display = "none"
+        spinning.style.display = "block"
+        response = await axios.get('http://127.0.0.1:8000/order/api/getbtcaddress/')
+        notSpinning.style.display = "block"
+        spinning.style.display = "none"
+        input_amount = document.getElementById("hidden_amount").value
+        btc_address.textContent = response['data']['wallet']
+        btc_amount.textContent = (Number(input_amount)/Number(response['data']['price'])).toFixed(5)
+        modalButton.click()
+    } catch (e){
+        console.log(e)
+        notSpinning.style.display = "block"
+        spinning.style.display = "none"
+    }
+}
+
 var today = new Date();
 var mm = today.getMonth()+1; //January is 0!
 var yyyy = today.getFullYear();

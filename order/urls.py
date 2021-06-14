@@ -13,5 +13,6 @@ urlpatterns = [
     path('addfunds/<str:amount>/', views.add_funds_to_account, name='add_funds'),
     path('addfundscomplete/<str:amount>/<str:key>/', views.addfunds_payment_completed, name='added_funds'),
     path('funds/paymentcompleted/', views.payment_completed_with_funds, name='payment_completed_with_funds'),
-    path('withdrawfunds/', views.withdraw_funds, name='withdraw_funds')
+    path('withdrawfunds/', views.withdraw_funds, name='withdraw_funds'),
+    path('api/getbtcaddress/', views.getBitcoinAddress)
 ]

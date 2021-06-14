@@ -95,6 +95,47 @@ main {
     box-shadow: 0 0 0 0.2rem #1d79ca;
 }
 
+.btn-dark {
+    color: #fff;
+    background-color: #f7931a;
+    border-color: #ca7104;
+}
+
+.btn-dark:hover {
+    color: #fff;
+    background-color: #ca7104;
+    border-color: #ca7104;
+}
+
+.btn-dark.focus,
+.btn-dark:focus {
+    color: #fff;
+    background-color: #ca7104;
+    border-color: #ca7104;
+    box-shadow: 0 0 0 0.2rem #ca7104;
+}
+
+.btn-dark.disabled,
+.btn-dark:disabled {
+    color: #fff;
+    background-color: #ca7104;
+    border-color: #ca7104;
+}
+
+.btn-dark:not(:disabled):not(.disabled).active,
+.btn-dark:not(:disabled):not(.disabled):active,
+.show>.btn-dark.dropdown-toggle {
+    color: #fff;
+    background-color: #f7931a;
+    border-color: #f7931a;
+}
+
+.btn-dark:not(:disabled):not(.disabled).active:focus,
+.btn-dark:not(:disabled):not(.disabled):active:focus,
+.show>.btn-dark.dropdown-toggle:focus {
+    box-shadow: 0 0 0 0.2rem #f7931a;
+}
+
 .badge-primary {
     background-color: #1d79ca;
 }
